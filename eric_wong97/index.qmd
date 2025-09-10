@@ -2,6 +2,6 @@
 title: "eric_wong97"
 ---
 
-This is a Quarto website.
+Hello, this is Eric. Welcome to my website. A little bit about me, I like to watch rom coms and eat ramen. Not necessarily both at the same time! Thanks for dropping by.
 
 To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
