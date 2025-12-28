@@ -2,15 +2,36 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "eric_wong97",
+    "title": "Eric Wong",
     "section": "",
-    "text": "Hello, this is Eric. Welcome to my website. A little bit about me, I like to watch rom coms and eat ramen. Not necessarily both at the same time! Thanks for dropping by.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "I am a Master of Data Science student at the University of British Columbia, specializing in machine learning, cloud computing, and data strategy."
+  },
+  {
+    "objectID": "index.html#technical-skills",
+    "href": "index.html#technical-skills",
+    "title": "Eric Wong",
+    "section": "Technical Skills",
+    "text": "Technical Skills\n\n\n\n\n\n\n\nCategory\nSkills\n\n\n\n\nLanguages\nPython (Pandas, NumPy, Scikit-learn, PyTorch), SQL, R, VBA\n\n\nCloud & DevOps\nAzure (Synapse, Data Factory), AWS, Docker, CI/CD, Git\n\n\nDatabases\nPostgreSQL, MongoDB\n\n\nVisualization\nPowerBI, Tableau, Seaborn, Altair, Looker"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "Experience",
     "section": "",
-    "text": "About this site"
+    "text": "Vancouver, British Columbia | November 2022 - August 2025\n\nLead Time Reduction: Designed and deployed scalable data pipelines using Python, SQL, and Azure across 4 major projects, reducing customer onboard and setup time from 6 months to 4 weeks.\nDigitalization: Led the design and implementation of digitalized reporting systems, increasing interdepartmental cohesion across 10 teams and reducing manual effort by 6 hours weekly.\nAnomaly Modeling: Developed, validated, and deployed machine learning models to identify and mitigate over 30 anomalies per site, safeguarding operational integrity.\nData Analysis: Wrangled large datasets from diverse sources using Python and SQL to uncover critical insights for strategic decision-making.\nAzure DevOps Integration: Led the integration of CI/CD best practices and facilitated peer reviews to advance data analytics capabilities.\n\n\n\n\nBurnaby, British Columbia | November 2021 - November 2022\n\nMarket Analysis: Analyzed market data to provide key insights, contributing to a 23% revenue increase from the previous year.\nVendor Inventory Management: Managed 8 VMI systems and leveraged Tableau to convey logistics KPIs, reducing lead times by 12% YoY.\nContract Management: Maintained high-volume contracts ($4m/month) by leveraging LumberTrack data to forecast supply needs."
+  },
+  {
+    "objectID": "about.html#professional-experience",
+    "href": "about.html#professional-experience",
+    "title": "Experience",
+    "section": "",
+    "text": "Vancouver, British Columbia | November 2022 - August 2025\n\nLead Time Reduction: Designed and deployed scalable data pipelines using Python, SQL, and Azure across 4 major projects, reducing customer onboard and setup time from 6 months to 4 weeks.\nDigitalization: Led the design and implementation of digitalized reporting systems, increasing interdepartmental cohesion across 10 teams and reducing manual effort by 6 hours weekly.\nAnomaly Modeling: Developed, validated, and deployed machine learning models to identify and mitigate over 30 anomalies per site, safeguarding operational integrity.\nData Analysis: Wrangled large datasets from diverse sources using Python and SQL to uncover critical insights for strategic decision-making.\nAzure DevOps Integration: Led the integration of CI/CD best practices and facilitated peer reviews to advance data analytics capabilities.\n\n\n\n\nBurnaby, British Columbia | November 2021 - November 2022\n\nMarket Analysis: Analyzed market data to provide key insights, contributing to a 23% revenue increase from the previous year.\nVendor Inventory Management: Managed 8 VMI systems and leveraged Tableau to convey logistics KPIs, reducing lead times by 12% YoY.\nContract Management: Maintained high-volume contracts ($4m/month) by leveraging LumberTrack data to forecast supply needs."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Experience",
+    "section": "Education",
+    "text": "Education\n\nMaster of Data Science\nUniversity of British Columbia | August 2025 - Present  Relevant Coursework: Algorithms & Data Structures, Supervised & Unsupervised Learning, Cloud Computing, Databases, Causal Inference, Spatial & Temporal Models, Advanced Machine Learning.\n\n\nBachelor of Science\nUniversity of British Columbia | September 2016 - June 2021"
   }
 ]

@@ -1,20 +1,26 @@
 project:
   type: website
   output-dir: ../docs
-  
+
 website:
-  title: "eric_wong97"
+  title: "Eric Wong"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: Experience
+    right:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/eric~wong/
+      - icon: github
+        href: https://github.com/Eric-Wong97
+      - icon: envelope
+        href: mailto:eric97wong@gmail.com
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: cosmo
     css: styles.css
     toc: true
 

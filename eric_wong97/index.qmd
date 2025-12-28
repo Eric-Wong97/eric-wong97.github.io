@@ -1,7 +1,27 @@
 ---
-title: "eric_wong97"
+title: "Eric Wong"
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/eric~wong/
+    - icon: github
+      text: Github
+      href: https://github.com/Eric-Wong97
+    - icon: envelope
+      text: Email
+      href: mailto:eric97wong@gmail.com
 ---
 
-Hello, this is Eric. Welcome to my website. A little bit about me, I like to watch rom coms and eat ramen. Not necessarily both at the same time! Thanks for dropping by.
+I am a **Master of Data Science** student at the University of British Columbia, specializing in machine learning, cloud computing, and data strategy.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+## Technical Skills
+
+| Category | Skills |
+|----------|--------|
+| **Languages** | Python (Pandas, NumPy, Scikit-learn, PyTorch), SQL, R, VBA |
+| **Cloud & DevOps** | Azure (Synapse, Data Factory), AWS, Docker, CI/CD, Git |
+| **Databases** | PostgreSQL, MongoDB |
+| **Visualization** | PowerBI, Tableau, Seaborn, Altair, Looker |
+
