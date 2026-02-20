@@ -1,0 +1,32 @@
+---
+title: "Experience"
+---
+
+## Education
+
+### Master of Data Science
+**University of British Columbia** | *August 2025 - Present (expected June 2026)* <br>
+**Core Competencies:** Machine Learning, Cloud Computing, Advanced Data Structures, Causal Inference.<br>
+*Pursuing advanced specialization in scalable data architecture and predictive modeling to solve complex business challenges.*
+
+### Bachelor of Science
+**University of British Columbia** | *September 2016 - June 2021*
+
+## Professional Experience
+
+### Data Analyst | FPInnovations
+*Vancouver, British Columbia | November 2022 - August 2025*
+
+*   **Performance Optimization:** Engineered and deployed scalable ETL data pipelines (Python, SQL, Azure) across 4 flagship initiatives, drastically cutting client onboarding timelines from **6 months to 4 weeks**.
+*   **Predictive Analytics:** Architected and deployed end-to-end machine learning anomaly detection models, successfully actively mitigating **30+ operational anomalies per site** and safeguarding business continuity.
+*   **Process Automation:** Spearheaded the transition to digitalized reporting architectures spanning 10 cross-functional teams, reclaiming **300+ annual hours** of manual engineering effort.
+*   **DevOps & CI/CD:** Championed Azure DevOps integration and robust CI/CD pipelines, elevating team-wide code quality and deployment velocity through structured code reviews.
+*   **Data Strategy:** Wrangled and synthesized massive heterogeneous datasets to surface actionable intelligence, directly influencing executive strategic initiatives.
+
+### Sales and Logistics Analyst | Interfor
+*(Formerly Sales Assistant)* <br>
+*Burnaby, British Columbia | November 2021 - November 2022*
+
+*   **Business Intelligence:** Designed dynamic Tableau dashboards tracking critical logistics KPIs across 8 VMI frameworks, reducing operational lead times by **12% YoY**.
+*   **Revenue Growth:** Conducted rigorous market trend variance analysis that identified key growth opportunities, heavily contributing to a **23% YoY revenue surge**.
+*   **Operations Management:** Administered and optimized high-value supply contracts ($4M/month run-rate) by leveraging ERP data (LumberTrack) for precise demand forecasting.

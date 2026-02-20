@@ -8,7 +8,7 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: about.qmd
+      - href: experience.qmd
         text: Experience
     right:
       - icon: linkedin
