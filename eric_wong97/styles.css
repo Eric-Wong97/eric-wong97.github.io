@@ -3,6 +3,25 @@
   --primary: #4a90e2;
   --bg-color: #f8f9fa;
   --text-main: #333;
+  --card-bg: white;
+  --table-border: #e2e8f0;
+  --table-header: #e2e8f0;
+  --table-hover: #f7fafc;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.05);
+}
+
+[data-bs-theme="dark"],
+body.quarto-dark {
+  --primary: #63b3ed;
+  --bg-color: #222;
+  --text-main: #f8f9fa;
+  --card-bg: #333;
+  --table-border: #444;
+  --table-header: #444;
+  --table-hover: #3a3a3a;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-hover: rgba(0, 0, 0, 0.3);
 }
 
 body {
@@ -10,12 +29,20 @@ body {
   color: var(--text-main);
   background-color: var(--bg-color);
   animation: fadeIn 0.8s ease-out;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Base animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
@@ -40,33 +67,36 @@ table {
   border-collapse: collapse;
   width: 100%;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  background: white;
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-hover);
+  background: var(--card-bg);
   border-radius: 8px;
   overflow: hidden;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 th {
-  background-color: #e2e8f0;
+  background-color: var(--table-header);
   padding: 1rem;
   text-align: left;
   font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 td {
   padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--table-border);
+  transition: border-color 0.3s ease;
 }
 
 tr:hover td {
-  background-color: #f7fafc;
+  background-color: var(--table-hover);
   transition: background-color 0.2s;
 }
 
 /* Profile image styling for jolla template */
 .about-image {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-hover);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .about-image:hover {
@@ -78,12 +108,14 @@ tr:hover td {
   transition: all 0.2s;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 4px var(--shadow-hover);
+  color: var(--text-main);
 }
 
 .about-links .about-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
   background-color: var(--bg-color);
+  color: var(--primary);
 }
