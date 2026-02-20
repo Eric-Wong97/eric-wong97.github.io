@@ -1,7 +1,9 @@
 ---
 title: "Eric Wong"
+image: profile.png
 about:
   template: jolla
+  image-shape: round
   links:
     - icon: linkedin
       text: LinkedIn
