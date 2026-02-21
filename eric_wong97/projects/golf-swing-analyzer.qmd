@@ -7,7 +7,7 @@ format:
 
 ```{=html}
 <div class="analyzer-container fade-in">
-  <p class="description">Upload a prerecorded video of your golf swing to receive real-time posture analysis. <strong>100% Private</strong>: all processing is done locally in your browser using Google's MediaPipe Vision API.</p>
+  <p class="description">Upload a prerecorded video of your golf swing to receive real-time posture analysis. <strong>100% Private</strong>: all processing is done locally in your browser using Google's MediaPipe Vision API. You can check out the repo here: <a href="https://github.com/Eric-Wong97/golf-swing-analyzer">https://github.com/Eric-Wong97/golf-swing-analyzer</a></p>
 
   <div class="upload-section">
     <label for="video-upload" class="upload-btn">
