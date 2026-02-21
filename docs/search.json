@@ -1,42 +1,21 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Eric Wong",
+    "objectID": "projects/golf-swing-analyzer.html",
+    "href": "projects/golf-swing-analyzer.html",
+    "title": "Golf Swing Analyzer MVP",
     "section": "",
-    "text": "I am a Master of Data Science student at the University of British Columbia, specializing in machine learning, cloud computing, and data strategy."
-  },
-  {
-    "objectID": "index.html#technical-skills",
-    "href": "index.html#technical-skills",
-    "title": "Eric Wong",
-    "section": "Technical Skills",
-    "text": "Technical Skills\n\n\n\n\n\n\n\nCategory\nSkills\n\n\n\n\nLanguages\nPython (Pandas, NumPy, Scikit-learn, PyTorch), SQL, R, VBA\n\n\nCloud & DevOps\nAzure (Synapse, Data Factory), AWS, Docker, CI/CD, Git\n\n\nDatabases\nPostgreSQL, MongoDB\n\n\nVisualization\nPowerBI, Tableau, Seaborn, Altair, Looker"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Experience",
-    "section": "",
-    "text": "Vancouver, British Columbia | November 2022 - August 2025\n\nLead Time Reduction: Designed and deployed scalable data pipelines using Python, SQL, and Azure across 4 major projects, reducing customer onboard and setup time from 6 months to 4 weeks.\nDigitalization: Led the design and implementation of digitalized reporting systems, increasing interdepartmental cohesion across 10 teams and reducing manual effort by 6 hours weekly.\nAnomaly Modeling: Developed, validated, and deployed machine learning models to identify and mitigate over 30 anomalies per site, safeguarding operational integrity.\nData Analysis: Wrangled large datasets from diverse sources using Python and SQL to uncover critical insights for strategic decision-making.\nAzure DevOps Integration: Led the integration of CI/CD best practices and facilitated peer reviews to advance data analytics capabilities.\n\n\n\n\nBurnaby, British Columbia | November 2021 - November 2022\n\nMarket Analysis: Analyzed market data to provide key insights, contributing to a 23% revenue increase from the previous year.\nVendor Inventory Management: Managed 8 VMI systems and leveraged Tableau to convey logistics KPIs, reducing lead times by 12% YoY.\nContract Management: Maintained high-volume contracts ($4m/month) by leveraging LumberTrack data to forecast supply needs."
-  },
-  {
-    "objectID": "about.html#professional-experience",
-    "href": "about.html#professional-experience",
-    "title": "Experience",
-    "section": "",
-    "text": "Vancouver, British Columbia | November 2022 - August 2025\n\nLead Time Reduction: Designed and deployed scalable data pipelines using Python, SQL, and Azure across 4 major projects, reducing customer onboard and setup time from 6 months to 4 weeks.\nDigitalization: Led the design and implementation of digitalized reporting systems, increasing interdepartmental cohesion across 10 teams and reducing manual effort by 6 hours weekly.\nAnomaly Modeling: Developed, validated, and deployed machine learning models to identify and mitigate over 30 anomalies per site, safeguarding operational integrity.\nData Analysis: Wrangled large datasets from diverse sources using Python and SQL to uncover critical insights for strategic decision-making.\nAzure DevOps Integration: Led the integration of CI/CD best practices and facilitated peer reviews to advance data analytics capabilities.\n\n\n\n\nBurnaby, British Columbia | November 2021 - November 2022\n\nMarket Analysis: Analyzed market data to provide key insights, contributing to a 23% revenue increase from the previous year.\nVendor Inventory Management: Managed 8 VMI systems and leveraged Tableau to convey logistics KPIs, reducing lead times by 12% YoY.\nContract Management: Maintained high-volume contracts ($4m/month) by leveraging LumberTrack data to forecast supply needs."
-  },
-  {
-    "objectID": "about.html#education",
-    "href": "about.html#education",
-    "title": "Experience",
-    "section": "Education",
-    "text": "Education\n\nMaster of Data Science\nUniversity of British Columbia | August 2025 - Present  Relevant Coursework: Algorithms & Data Structures, Supervised & Unsupervised Learning, Cloud Computing, Databases, Causal Inference, Spatial & Temporal Models, Advanced Machine Learning.\n\n\nBachelor of Science\nUniversity of British Columbia | September 2016 - June 2021"
+    "text": "Upload a prerecorded video of your golf swing to receive real-time posture analysis. 100% Private: all processing is done locally in your browser using Google's MediaPipe Vision API.\n\n  \n    \n       Select Video\n    \n    \n    No file chosen\n  \n\n  \n    \n      Loading Model...\n    \n    Initializing AI Model...\n  \n\n  \n    \n      \n      \n    \n    \n    \n      Analysis Dashboard\n      \n      \n        Lead Arm Straightness\n        --°\n        Waiting for video...\n      \n      \n      \n        Athletic Posture (Knees)\n        --°\n        Waiting for video..."
   },
   {
     "objectID": "experience.html",
     "href": "experience.html",
+    "title": "Experience",
+    "section": "",
+    "text": "University of British Columbia | August 2025 - Present (expected June 2026)  Core Competencies: Machine Learning, Cloud Computing, Advanced Data Structures, Causal Inference. Pursuing advanced specialization in scalable data architecture and predictive modeling to solve complex business challenges.\n\n\n\nUniversity of British Columbia | September 2016 - June 2021"
+  },
+  {
+    "objectID": "experience.html#education",
+    "href": "experience.html#education",
     "title": "Experience",
     "section": "",
     "text": "University of British Columbia | August 2025 - Present (expected June 2026)  Core Competencies: Machine Learning, Cloud Computing, Advanced Data Structures, Causal Inference. Pursuing advanced specialization in scalable data architecture and predictive modeling to solve complex business challenges.\n\n\n\nUniversity of British Columbia | September 2016 - June 2021"
@@ -49,10 +28,17 @@
     "text": "Professional Experience\n\nData Analyst | FPInnovations\nVancouver, British Columbia | November 2022 - August 2025\n\nPerformance Optimization: Engineered and deployed scalable ETL data pipelines (Python, SQL, Azure) across 4 flagship initiatives, drastically cutting client onboarding timelines from 6 months to 4 weeks.\nPredictive Analytics: Architected and deployed end-to-end machine learning anomaly detection models, successfully actively mitigating 30+ operational anomalies per site and safeguarding business continuity.\nProcess Automation: Spearheaded the transition to digitalized reporting architectures spanning 10 cross-functional teams, reclaiming 300+ annual hours of manual engineering effort.\nDevOps & CI/CD: Championed Azure DevOps integration and robust CI/CD pipelines, elevating team-wide code quality and deployment velocity through structured code reviews.\nData Strategy: Wrangled and synthesized massive heterogeneous datasets to surface actionable intelligence, directly influencing executive strategic initiatives.\n\n\n\nSales and Logistics Analyst | Interfor\n(Formerly Sales Assistant)  Burnaby, British Columbia | November 2021 - November 2022\n\nBusiness Intelligence: Designed dynamic Tableau dashboards tracking critical logistics KPIs across 8 VMI frameworks, reducing operational lead times by 12% YoY.\nRevenue Growth: Conducted rigorous market trend variance analysis that identified key growth opportunities, heavily contributing to a 23% YoY revenue surge.\nOperations Management: Administered and optimized high-value supply contracts ($4M/month run-rate) by leveraging ERP data (LumberTrack) for precise demand forecasting."
   },
   {
-    "objectID": "experience.html#education",
-    "href": "experience.html#education",
-    "title": "Experience",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Eric Wong",
     "section": "",
-    "text": "University of British Columbia | August 2025 - Present (expected June 2026)  Core Competencies: Machine Learning, Cloud Computing, Advanced Data Structures, Causal Inference. Pursuing advanced specialization in scalable data architecture and predictive modeling to solve complex business challenges.\n\n\n\nUniversity of British Columbia | September 2016 - June 2021"
+    "text": "I am a Master of Data Science student at the University of British Columbia, specializing in machine learning, cloud computing, and data strategy."
+  },
+  {
+    "objectID": "index.html#technical-skills",
+    "href": "index.html#technical-skills",
+    "title": "Eric Wong",
+    "section": "Technical Skills",
+    "text": "Technical Skills\n\n\n\n\n\n\n\nCategory\nSkills\n\n\n\n\nLanguages\nPython (Pandas, NumPy, Scikit-learn, PyTorch), SQL, R, VBA\n\n\nCloud & DevOps\nAzure (Synapse, Data Factory), AWS, Docker, CI/CD, Git\n\n\nDatabases\nPostgreSQL, MongoDB\n\n\nVisualization\nPowerBI, Tableau, Seaborn, Altair, Looker"
   }
 ]

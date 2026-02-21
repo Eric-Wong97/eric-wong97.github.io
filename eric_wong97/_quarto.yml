@@ -10,6 +10,11 @@ website:
         text: Home
       - href: experience.qmd
         text: Experience
+      - text: Projects
+        menu:
+          - text: Personal
+          - text: Golf Swing Analyzer
+            href: projects/golf-swing-analyzer.qmd
     right:
       - icon: linkedin
         href: https://www.linkedin.com/in/eric~wong/
