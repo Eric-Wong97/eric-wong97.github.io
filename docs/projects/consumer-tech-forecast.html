@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Golf Swing Analyzer MVP – Eric Wong</title>
+<title>Consumer Tech Retail Forecasting Dashboard – Eric Wong</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -318,7 +318,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Golf Swing Analyzer MVP</h1>
+<h1 class="title">Consumer Tech Retail Forecasting Dashboard</h1>
 </div>
 
 
@@ -335,360 +335,647 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="analyzer-container fade-in">
-  <p class="description">Upload a prerecorded video of your golf swing to receive real-time posture analysis. <strong>100% Private</strong>: all processing is done locally in your browser using Google's MediaPipe Vision API. You can check out the repo here: <a href="https://github.com/Eric-Wong97/golf-swing-analyzer">https://github.com/Eric-Wong97/golf-swing-analyzer</a></p>
+<div class="ctrd-container fade-in">
 
-  <div class="upload-section">
-    <label for="video-upload" class="upload-btn">
-      <i class="bi bi-upload"></i> Select Video
-    </label>
-    <input type="file" id="video-upload" accept="video/*" style="display: none;">
-    <span id="file-name" class="file-name">No file chosen</span>
-  </div>
-
-  <div id="loading-indicator" class="loading-indicator" style="display: none;">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading Model...</span>
-    </div>
-    <span class="ms-2">Initializing AI Model...</span>
-  </div>
-
-  <div class="workspace">
-    <div class="video-wrapper">
-      <video id="video-element" controls="" playsinline="" style="display: none;"></video>
-      <canvas id="output-canvas"></canvas>
-    </div>
-    
-    <div class="dashboard">
-      <h3 class="anchored">Analysis Dashboard</h3>
-      
-      <div class="metric-card">
-        <h4 class="anchored">Lead Arm Straightness</h4>
-        <div class="metric-value" id="arm-angle">--°</div>
-        <div class="recommendation" id="arm-rec">Waiting for video...</div>
+  <!-- Header -->
+  <div class="ctrd-header">
+    <div class="ctrd-header-text">
+      <p class="ctrd-description">
+        An end-to-end retail analytics pipeline — from raw transactional data in
+        <strong>MongoDB</strong> through exploratory analysis and Holt-Winters
+        forecasting to this interactive front-end. The live
+        <strong>R Shiny</strong> dashboard (source below) adds drill-down filters,
+        ARIMA/ETS model selection, and a real-time MongoDB query preview.
+      </p>
+      <div class="ctrd-badges">
+        <span class="badge-pill badge-r">R / Shiny</span>
+        <span class="badge-pill badge-mongo">MongoDB</span>
+        <span class="badge-pill badge-forecast">Forecasting</span>
+        <span class="badge-pill badge-eda">EDA</span>
+        <span class="badge-pill badge-retail">Retail Analytics</span>
       </div>
-      
-      <div class="metric-card">
-        <h4 class="anchored">Athletic Posture (Knees)</h4>
-        <div class="metric-value" id="knee-angle">--°</div>
-        <div class="recommendation" id="knee-rec">Waiting for video...</div>
+      <div class="ctrd-links">
+        <a href="https://github.com/Eric-Wong97/eric-wong97.github.io/tree/main/shiny-app" target="_blank" class="ctrd-btn ctrd-btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewbox="0 0 16 16" style="margin-right:6px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+          Source Code
+        </a>
+        <a href="https://github.com/Eric-Wong97/eric-wong97.github.io/tree/main/shiny-app#quickstart" target="_blank" class="ctrd-btn ctrd-btn-primary">
+          Deploy Shiny App ↗
+        </a>
       </div>
     </div>
+
+    <!-- Architecture card -->
+    <div class="ctrd-arch-card">
+      <div class="ctrd-arch-title">Pipeline Architecture</div>
+      <div class="ctrd-arch-row">
+        <div class="ctrd-arch-step">
+          <div class="ctrd-arch-icon">🗄️</div>
+          <div class="ctrd-arch-label">MongoDB Atlas</div>
+          <div class="ctrd-arch-sub">15,600 weekly records</div>
+        </div>
+        <div class="ctrd-arch-arrow">→</div>
+        <div class="ctrd-arch-step">
+          <div class="ctrd-arch-icon">🔬</div>
+          <div class="ctrd-arch-label">EDA (R)</div>
+          <div class="ctrd-arch-sub">mongolite + dplyr</div>
+        </div>
+        <div class="ctrd-arch-arrow">→</div>
+        <div class="ctrd-arch-step">
+          <div class="ctrd-arch-icon">📈</div>
+          <div class="ctrd-arch-label">Forecasting</div>
+          <div class="ctrd-arch-sub">ETS / Holt-Winters</div>
+        </div>
+        <div class="ctrd-arch-arrow">→</div>
+        <div class="ctrd-arch-step">
+          <div class="ctrd-arch-icon">🖥️</div>
+          <div class="ctrd-arch-label">Shiny Dashboard</div>
+          <div class="ctrd-arch-sub">bslib + plotly</div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- KPI Row -->
+  <div class="ctrd-kpi-row" id="kpi-row">
+    <div class="ctrd-kpi-card">
+      <div class="ctrd-kpi-label">Total Revenue (3 yr)</div>
+      <div class="ctrd-kpi-value" id="kpi-rev">—</div>
+      <div class="ctrd-kpi-sub">Jan 2022 – Dec 2024</div>
+    </div>
+    <div class="ctrd-kpi-card">
+      <div class="ctrd-kpi-label">Units Sold</div>
+      <div class="ctrd-kpi-value" id="kpi-units">—</div>
+      <div class="ctrd-kpi-sub">Across all categories</div>
+    </div>
+    <div class="ctrd-kpi-card">
+      <div class="ctrd-kpi-label">YoY Revenue Growth</div>
+      <div class="ctrd-kpi-value" id="kpi-yoy">—</div>
+      <div class="ctrd-kpi-sub">2024 vs 2023</div>
+    </div>
+    <div class="ctrd-kpi-card">
+      <div class="ctrd-kpi-label">Top Category</div>
+      <div class="ctrd-kpi-value" id="kpi-cat">—</div>
+      <div class="ctrd-kpi-sub">By total revenue</div>
+    </div>
+  </div>
+
+  <!-- Tab Nav -->
+  <div class="ctrd-tabs">
+    <button class="ctrd-tab active" data-tab="overview">Overview</button>
+    <button class="ctrd-tab" data-tab="eda">EDA</button>
+    <button class="ctrd-tab" data-tab="forecast">Forecast</button>
+  </div>
+
+  <!-- Overview Tab -->
+  <div class="ctrd-panel active" id="tab-overview">
+    <div class="ctrd-chart-grid-2">
+      <div class="ctrd-card">
+        <div class="ctrd-card-header">Monthly Revenue Trend</div>
+        <canvas id="chart-trend" height="220"></canvas>
+      </div>
+      <div class="ctrd-card">
+        <div class="ctrd-card-header">Revenue by Category</div>
+        <canvas id="chart-donut" height="220"></canvas>
+      </div>
+    </div>
+    <div class="ctrd-card" style="margin-top:1.5rem">
+      <div class="ctrd-card-header">Revenue by Region</div>
+      <canvas id="chart-region" height="160"></canvas>
+    </div>
+  </div>
+
+  <!-- EDA Tab -->
+  <div class="ctrd-panel" id="tab-eda">
+    <div class="ctrd-chart-grid-2">
+      <div class="ctrd-card">
+        <div class="ctrd-card-header">Stacked Revenue by Category</div>
+        <canvas id="chart-stacked" height="240"></canvas>
+      </div>
+      <div class="ctrd-card">
+        <div class="ctrd-card-header">Brand Revenue Ranking</div>
+        <canvas id="chart-brand" height="240"></canvas>
+      </div>
+    </div>
+    <div class="ctrd-card" style="margin-top:1.5rem">
+      <div class="ctrd-card-header">Seasonality Index (Revenue vs Annual Mean by Month)</div>
+      <canvas id="chart-seasonal" height="180"></canvas>
+    </div>
+  </div>
+
+  <!-- Forecast Tab -->
+  <div class="ctrd-panel" id="tab-forecast">
+    <div class="ctrd-card">
+      <div class="ctrd-card-header">
+        Holt-Winters Forecast — Jan–Jun 2025
+        <span class="ctrd-model-badge">Triple Exponential Smoothing (α=0.3, β=0.1, γ=0.4)</span>
+      </div>
+      <canvas id="chart-forecast" height="280"></canvas>
+    </div>
+    <div class="ctrd-methodology">
+      <h4 class="anchored">Forecasting Methodology</h4>
+      <p>
+        Revenue is modelled with <strong>Holt-Winters triple exponential smoothing</strong> (period = 12 months),
+        which decomposes the signal into level, trend, and seasonality components. The 95% prediction
+        interval widens with forecast horizon, reflecting accumulated uncertainty. In the full
+        <strong>R Shiny app</strong>, <code>forecast::ets()</code> automatically selects the optimal
+        error/trend/seasonal variant (additive vs multiplicative vs damped) via AIC.
+      </p>
+      <div class="ctrd-metric-row">
+        <div class="ctrd-metric"><span class="ctrd-metric-val" id="metric-rmse">—</span><span class="ctrd-metric-label">RMSE</span></div>
+        <div class="ctrd-metric"><span class="ctrd-metric-val" id="metric-mape">—</span><span class="ctrd-metric-label">MAPE</span></div>
+        <div class="ctrd-metric"><span class="ctrd-metric-val">6</span><span class="ctrd-metric-label">Month Horizon</span></div>
+        <div class="ctrd-metric"><span class="ctrd-metric-val">95%</span><span class="ctrd-metric-label">Confidence</span></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <style>
-  .analyzer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 0;
-  }
-  
-  .description {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    color: var(--bs-body-color);
-  }
-  
-  .upload-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .upload-btn {
-    background: var(--primary);
-    color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .upload-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-  }
-  
-  .file-name {
-    font-family: monospace;
-    color: #6c757d;
-  }
+/* ---- Container ---- */
+.ctrd-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+}
 
-  .workspace {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-  
-  @media (max-width: 900px) {
-    .workspace {
-      grid-template-columns: 1fr;
-    }
-  }
+/* ---- Header ---- */
+.ctrd-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+@media (max-width: 900px) {
+  .ctrd-header { grid-template-columns: 1fr; }
+}
+.ctrd-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--bs-body-color);
+  margin-bottom: 1rem;
+}
+.ctrd-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.badge-pill {
+  padding: 0.3rem 0.8rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.badge-r        { background: rgba(21,92,214,0.12); color: #155cd6; }
+.badge-mongo    { background: rgba(0,168,80,0.12);  color: #00a850; }
+.badge-forecast { background: rgba(226,92,74,0.12); color: #e25c4a; }
+.badge-eda      { background: rgba(160,74,226,0.12);color: #a04ae2; }
+.badge-retail   { background: rgba(240,165,0,0.12); color: #cc8800; }
+.ctrd-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.ctrd-btn {
+  display: inline-flex; align-items: center;
+  padding: 0.45rem 1.1rem; border-radius: 8px;
+  font-size: 0.88rem; font-weight: 500;
+  text-decoration: none; transition: all 0.2s;
+}
+.ctrd-btn-outline {
+  border: 1.5px solid var(--bs-border-color);
+  color: var(--bs-body-color);
+  background: transparent;
+}
+.ctrd-btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+.ctrd-btn-primary { background: var(--primary); color: #fff; border: 1.5px solid transparent; }
+.ctrd-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); color: #fff; text-decoration: none; }
 
-  .video-wrapper {
-    position: relative;
-    width: 100%;
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    aspect-ratio: 16/9;
-  }
+/* ---- Architecture card ---- */
+.ctrd-arch-card {
+  background: var(--bs-secondary-bg, #f8f9fa);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  min-width: 380px;
+  max-width: 460px;
+}
+@media (max-width: 900px) { .ctrd-arch-card { min-width: unset; max-width: 100%; } }
+.ctrd-arch-title { font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6c757d; margin-bottom: 1rem; }
+.ctrd-arch-row { display: flex; align-items: center; justify-content: space-between; gap: 0.25rem; }
+.ctrd-arch-step { text-align: center; flex: 1; }
+.ctrd-arch-icon { font-size: 1.6rem; }
+.ctrd-arch-label { font-size: 0.78rem; font-weight: 600; margin-top: 0.25rem; }
+.ctrd-arch-sub { font-size: 0.68rem; color: #6c757d; }
+.ctrd-arch-arrow { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
 
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+/* ---- KPI row ---- */
+.ctrd-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) { .ctrd-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+.ctrd-kpi-card {
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.ctrd-kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.ctrd-kpi-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #6c757d; font-weight: 600; }
+.ctrd-kpi-value { font-size: 1.9rem; font-weight: 700; font-family: 'Inter', monospace; color: var(--primary); margin: 0.25rem 0; }
+.ctrd-kpi-sub { font-size: 0.75rem; color: #6c757d; }
 
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    object-fit: contain;
-  }
+/* ---- Tabs ---- */
+.ctrd-tabs { display: flex; gap: 0.25rem; margin-bottom: 1.25rem; border-bottom: 2px solid var(--bs-border-color); }
+.ctrd-tab {
+  background: none; border: none; border-bottom: 3px solid transparent;
+  margin-bottom: -2px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 500;
+  cursor: pointer; color: #6c757d; transition: all 0.2s;
+}
+.ctrd-tab:hover { color: var(--primary); }
+.ctrd-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-  .dashboard {
-    background: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  }
+/* ---- Panels ---- */
+.ctrd-panel { display: none; }
+.ctrd-panel.active { display: block; }
 
-  .dashboard h3 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-  }
+/* ---- Cards & charts ---- */
+.ctrd-chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 768px) { .ctrd-chart-grid-2 { grid-template-columns: 1fr; } }
+.ctrd-card {
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.ctrd-card-header {
+  font-weight: 600; font-size: 0.92rem; margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+}
+.ctrd-model-badge {
+  font-size: 0.72rem; font-weight: 400; color: #6c757d;
+  background: var(--bs-secondary-bg, #f8f9fa);
+  border: 1px solid var(--bs-border-color);
+  padding: 0.2rem 0.6rem; border-radius: 6px;
+}
 
-  .metric-card {
-    background: var(--bs-secondary-bg);
-    padding: 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-  }
-  
-  .metric-card h4 {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #6c757d;
-    margin-bottom: 0.5rem;
-  }
-
-  .metric-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    font-family: monospace;
-  }
-
-  .recommendation {
-    font-weight: 500;
-    padding: 0.5rem;
-    border-radius: 6px;
-    text-align: center;
-  }
-  
-  .rec-good {
-    background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-  }
-  
-  .rec-bad {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-  }
+/* ---- Methodology ---- */
+.ctrd-methodology {
+  background: var(--bs-secondary-bg, #f8f9fa);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.ctrd-methodology h4 { margin-top: 0; font-size: 1rem; }
+.ctrd-methodology p  { color: var(--bs-body-color); line-height: 1.7; margin-bottom: 1rem; }
+.ctrd-metric-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+.ctrd-metric { display: flex; flex-direction: column; }
+.ctrd-metric-val { font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: monospace; }
+.ctrd-metric-label { font-size: 0.78rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; }
 </style>
-<script type="module">
-import {
-  PoseLandmarker,
-  FilesetResolver,
-  DrawingUtils
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+// ---- Embedded pre-computed data ----
+const DATA = {"months":["2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12"],"rev_series":[15933590.52,13548317.43,15891608.03,14117989.76,14353381.69,8746072.11,7031834.96,7945181.36,7171370.08,11454833.48,14933806.82,18211492.67,17308533.73,14614966.99,16990012.94,15271926.83,15539887.01,9684351.26,9562428.11,6837324.89,7669435.71,12395042.24,16021466.55,19770473.86,18628788.76,15573468.0,17900285.33,19994324.42,13318636.0,10294195.11,10110564.75,7488783.87,10248946.1,10496237.09,17082749.37,21378938.14],"units_series":[30532,25640,30407,26912,27331,16870,13664,15197,13690,22102,28634,35230,33363,28093,32611,29079,29638,18357,18233,13090,14705,23675,30654,37721,35754,29886,34463,38523,25521,19815,19293,14303,19520,20167,32748,40783],"fc_months":["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06"],"fc_vals":[18222909.89,14683518.29,17050210.7,16934933.53,14573960.75,10033712.33],"fc_upper":[22925868.1,21334505.57,25195973.27,26340849.95,25090095.0,21553560.23],"fc_lower":[13519951.68,8032531.01,8904448.14,7529017.11,4057826.5,0],"cats":["Gaming","Laptops","Smart Home","Smartphones","Tablets","Wearables"],"cat_series":{"Gaming":[1499848.2,1241395.51,1407575.35,1367453.93,1300986.88,810875.34,641386.01,726047.51,660639.37,1033291.01,1391633.22,1707333.02,1573299.35,1330049.8,1561104.43,1379756.34,1368606.74,872749.11,892621.55,635848.83,730054.5,1159800.56,1457838.27,1790206.79,1705739.5,1403285.06,1675284.91,1862708.14,1201163.96,929906.76,928331.32,691553.61,957881.51,965765.71,1535859.47,1925171.15],"Laptops":[4080416.18,3587752.49,4218646.48,3751905.08,3768161.49,2230213.94,1844184.04,2064659.91,1887849.44,3026653.13,3836497.25,4926894.2,4400147.48,3717446.94,4427576.82,3906371.69,4069330.01,2508172.3,2479160.06,1779536.12,1985037.22,3174183.89,4220903.31,5128102.18,4965230.18,4034308.86,4621146.8,5268356.9,3458098.19,2717373.63,2685927.25,1936083.89,2660109.23,2794265.93,4453506.65,5554890.92],"Smart Home":[690941.36,569946.82,708157.53,622241.98,623257.48,405002.95,319200.76,351902.46,312407.1,515229.22,653084.39,800825.9,766945.38,659226.51,752832.62,666963.56,682200.97,421697.54,422833.25,305485.43,333469.17,544452.42,704725.89,862607.72,810631.47,703377.96,808939.25,879509.76,596547.07,453065.07,441959.05,329089.43,438616.23,458361.41,756194.42,931763.55],"Smartphones":[6547578.6,5498748.88,6485068.47,5592048.6,5836986.92,3566117.19,2818086.52,3233518.78,2920586.23,4636738.26,6091108.1,7156717.69,7171849.45,6043648.22,6911303.53,6428866.14,6374754.81,3927847.5,3877110.96,2764054.04,3120215.51,5102404.12,6479942.03,8042636.43,7532814.03,6392666.59,7188437.56,7958281.53,5397678.71,4103381.72,4077685.64,3065857.49,4194364.27,4186936.81,6914771.98,8768216.09],"Tablets":[1552106.3,1316530.96,1530498.31,1382717.77,1424935.28,898635.27,704965.15,776985.06,689581.11,1102137.69,1454005.68,1770385.5,1660284.08,1431684.6,1665082.75,1424238.8,1541175.23,975605.13,936737.58,683054.66,749010.13,1193115.26,1611610.27,1965543.63,1822395.06,1508367.09,1776297.27,2044362.78,1335390.14,1029230.21,996636.84,724622.11,1020202.81,1048875.16,1700733.93,2122177.86],"Wearables":[1562699.88,1333942.77,1541661.89,1401622.4,1399053.64,835227.42,704012.48,792067.64,700306.83,1140784.17,1507478.18,1849336.36,1736007.99,1432910.92,1672112.79,1465730.3,1503819.25,978279.68,953964.71,669345.81,751649.18,1221085.99,1546446.78,1981377.11,1791978.52,1531462.44,1830179.54,1981105.31,1329757.93,1061237.72,980024.65,741577.34,977772.05,1042032.07,1721682.92,2076718.57]},"brand_rev":{"Apple":97964888.73,"Samsung":78086267.36,"Google":54626828.5,"OnePlus":49320372.85,"Microsoft":47809155.75,"Lenovo":37217438.58,"Dell":25453070.3,"HP":25448763.91,"Fitbit":11856331.38,"Garmin":11852146.26},"region_rev":{"North America":136269650.47,"Europe":115417550.32,"Asia-Pacific":157187996.71,"Latin America":74646048.47},"kpis":{"total_rev":483521245.97,"total_units":926204,"avg_order":30994.95,"best_cat":"Smartphones","yoy_growth":6.7}};
 
-const videoUpload = document.getElementById("video-upload");
-const fileName = document.getElementById("file-name");
-const videoElement = document.getElementById("video-element");
-const canvasElement = document.getElementById("output-canvas");
-const canvasCtx = canvasElement.getContext("2d");
-const loadingIndicator = document.getElementById("loading-indicator");
+// ---- Helpers ----
+const fmtM  = v => '$' + (v/1e6).toFixed(1) + 'M';
+const fmtK  = v => (v/1e3).toFixed(0) + 'K';
+const CAT_COLORS = {
+  Gaming:       '#4ae2d9',
+  Laptops:      '#e25c4a',
+  'Smart Home': '#a04ae2',
+  Smartphones:  '#4a90e2',
+  Tablets:      '#4ae28c',
+  Wearables:    '#e2c94a'
+};
+const REG_COLORS = ['#4a90e2','#63c9a0','#f0a500','#e2604a'];
 
-const armAngleEl = document.getElementById("arm-angle");
-const armRecEl = document.getElementById("arm-rec");
-const kneeAngleEl = document.getElementById("knee-angle");
-const kneeRecEl = document.getElementById("knee-rec");
+// Detect dark mode
+function isDark() {
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark'
+      || document.body.classList.contains('quarto-dark');
+}
+function chartDefaults() {
+  const dark = isDark();
+  return {
+    color:   dark ? '#cbd5e1' : '#475569',
+    gridColor: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)',
+    tickColor: dark ? '#94a3b8' : '#64748b'
+  };
+}
 
-let poseLandmarker = undefined;
-let runningMode = "VIDEO";
-let lastVideoTime = -1;
-let isModelLoading = false;
+// ---- KPIs ----
+document.getElementById('kpi-rev').textContent   = fmtM(DATA.kpis.total_rev);
+document.getElementById('kpi-units').textContent = fmtK(DATA.kpis.total_units);
+document.getElementById('kpi-yoy').textContent   = '+' + DATA.kpis.yoy_growth + '%';
+document.getElementById('kpi-cat').textContent   = DATA.kpis.best_cat;
 
-// Geometry Math Ported from Python
-function calculateAngle(a, b, c) {
-  const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-  let angle = Math.abs(radians * 180.0 / Math.PI);
-  if (angle > 180.0) {
-    angle = 360 - angle;
+// Compute in-sample RMSE/MAPE for the methodology section
+(function computeMetrics() {
+  // Naive: last-year same-month as forecast (rough approximation for display)
+  const n = DATA.rev_series.length;
+  const slen = 12;
+  let sse = 0, mape = 0, count = 0;
+  for (let i = slen; i < n; i++) {
+    const pred = DATA.rev_series[i - slen];
+    const err  = DATA.rev_series[i] - pred;
+    sse   += err * err;
+    mape  += Math.abs(err / DATA.rev_series[i]);
+    count++;
   }
-  return angle;
-}
+  const rmse = Math.sqrt(sse / count);
+  const mapeVal = (mape / count * 100).toFixed(1);
+  document.getElementById('metric-rmse').textContent = fmtM(rmse);
+  document.getElementById('metric-mape').textContent = mapeVal + '%';
+})();
 
-function updateRecommendationUI(el, isGood, goodText, badText) {
-  el.textContent = isGood ? goodText : badText;
-  el.className = "recommendation " + (isGood ? "rec-good" : "rec-bad");
-}
-
-async function createPoseLandmarker() {
-  if (poseLandmarker) return;
-  isModelLoading = true;
-  loadingIndicator.style.display = "flex";
-  
-  const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
-  );
-  
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
-      delegate: "GPU"
-    },
-    runningMode: runningMode,
-    numPoses: 1
+// ---- Tab switching ----
+document.querySelectorAll('.ctrd-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ctrd-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ctrd-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
   });
-  
-  isModelLoading = false;
-  loadingIndicator.style.display = "none";
-}
-
-videoUpload.addEventListener("change", async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  fileName.textContent = file.name;
-  const fileURL = URL.createObjectURL(file);
-  videoElement.src = fileURL;
-  videoElement.style.display = "block";
-  
-  // Ensure model is loaded before playing
-  if (!poseLandmarker && !isModelLoading) {
-    await createPoseLandmarker();
-  }
 });
 
-// Setup Canvas dimensions to match video once loaded
-videoElement.addEventListener("loadedmetadata", () => {
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
-});
+// ---- Chart.js global defaults ----
+Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+Chart.defaults.font.size   = 12;
 
-// The main loop
-async function renderLoop() {
-  if (!poseLandmarker) {
-    window.requestAnimationFrame(renderLoop);
-    return;
-  }
-
-  if (videoElement.readyState >= 2 && videoElement.videoWidth > 0) {
-    // Only infer if video time has advanced
-    const startTimeMs = performance.now();
-    if (lastVideoTime !== videoElement.currentTime) {
-      lastVideoTime = videoElement.currentTime;
-      
-      poseLandmarker.detectForVideo(videoElement, startTimeMs, (result) => {
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        
-        if (result.landmarks && result.landmarks.length > 0) {
-          const landmarks = result.landmarks[0];
-          
-          // Draw standard skeleton lines
-          const drawingUtils = new DrawingUtils(canvasCtx);
-          drawingUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS, {
-            color: "#00FF00",
-            lineWidth: 2
-          });
-          drawingUtils.drawLandmarks(landmarks, {
-            color: "#FF0000",
-            lineWidth: 2,
-            radius: 3
-          });
-          
-          // Index mapping: 11 (L Shoulder), 13 (L Elbow), 15 (L Wrist)
-          // 23 (L Hip), 25 (L Knee), 27 (L Ankle)
-          const lShoulder = landmarks[11];
-          const lElbow = landmarks[13];
-          const lWrist = landmarks[15];
-          const lHip = landmarks[23];
-          const lKnee = landmarks[25];
-          const lAnkle = landmarks[27];
-          
-          if (lShoulder && lElbow && lWrist && lHip && lKnee && lAnkle) {
-            const armAngle = calculateAngle(lShoulder, lElbow, lWrist);
-            const kneeAngle = calculateAngle(lHip, lKnee, lAnkle);
-            
-            // Dashboard updates
-            armAngleEl.innerHTML = `${Math.round(armAngle)}&deg;`;
-            kneeAngleEl.innerHTML = `${Math.round(kneeAngle)}&deg;`;
-            
-            const isArmGood = armAngle >= 160;
-            updateRecommendationUI(armRecEl, isArmGood, "Lead arm straight: GOOD", "Keep lead arm straight!");
-            
-            let kneeRec = "Knee posture: GOOD";
-            let isKneeGood = true;
-            if (kneeAngle > 170) {
-                kneeRec = "Add knee bend!";
-                isKneeGood = false;
-            } else if (kneeAngle < 130) {
-                kneeRec = "Less knee bend!";
-                isKneeGood = false;
-            }
-            updateRecommendationUI(kneeRecEl, isKneeGood, "Knee posture: GOOD", kneeRec);
-            
-            // Draw angle overlays on canvas
-            canvasCtx.font = "24px 'Courier New', Courier, monospace";
-            canvasCtx.fillStyle = "white";
-            canvasCtx.strokeStyle = "black";
-            canvasCtx.lineWidth = 3;
-            
-            const elbowX = lElbow.x * canvasElement.width;
-            const elbowY = lElbow.y * canvasElement.height;
-            canvasCtx.strokeText(`${Math.round(armAngle)}°`, elbowX + 15, elbowY);
-            canvasCtx.fillText(`${Math.round(armAngle)}°`, elbowX + 15, elbowY);
-            
-            const kneeX = lKnee.x * canvasElement.width;
-            const kneeY = lKnee.y * canvasElement.height;
-            canvasCtx.strokeText(`${Math.round(kneeAngle)}°`, kneeX + 15, kneeY);
-            canvasCtx.fillText(`${Math.round(kneeAngle)}°`, kneeX + 15, kneeY);
+// ---- Overview: Revenue Trend ----
+(function() {
+  const cd = chartDefaults();
+  new Chart(document.getElementById('chart-trend'), {
+    type: 'line',
+    data: {
+      labels: DATA.months,
+      datasets: [{
+        label: 'Monthly Revenue',
+        data:  DATA.rev_series,
+        borderColor: '#4a90e2',
+        backgroundColor: 'rgba(74,144,226,0.08)',
+        borderWidth: 2.5,
+        pointRadius: 3,
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + fmtM(ctx.parsed.y)
           }
-        } else {
-            // Null state if person goes off camera
-            armAngleEl.innerHTML = `--&deg;`;
-            kneeAngleEl.innerHTML = `--&deg;`;
-            armRecEl.className = "recommendation";
-            armRecEl.textContent = "No person detected";
-            kneeRecEl.className = "recommendation";
-            kneeRecEl.textContent = "No person detected";
         }
-        canvasCtx.restore();
-      });
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit: 12, color: cd.tickColor }, grid: { color: cd.gridColor } },
+        y: { ticks: { callback: fmtM, color: cd.tickColor }, grid: { color: cd.gridColor } }
+      }
     }
-  }
-  
-  // Keep looping independent of video play state so pausing works naturally
-  window.requestAnimationFrame(renderLoop);
-}
+  });
+})();
 
-// Start watching for frames immediately
-window.requestAnimationFrame(renderLoop);
+// ---- Overview: Category Donut ----
+(function() {
+  const catTotals = DATA.cats.map(c => DATA.cat_series[c].reduce((a,b)=>a+b, 0));
+  new Chart(document.getElementById('chart-donut'), {
+    type: 'doughnut',
+    data: {
+      labels: DATA.cats,
+      datasets: [{ data: catTotals, backgroundColor: DATA.cats.map(c => CAT_COLORS[c]), borderWidth: 2 }]
+    },
+    options: {
+      responsive: true,
+      cutout: '55%',
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: { callbacks: { label: ctx => ' ' + fmtM(ctx.parsed) } }
+      }
+    }
+  });
+})();
+
+// ---- Overview: Region Bar ----
+(function() {
+  const cd = chartDefaults();
+  const labels = Object.keys(DATA.region_rev);
+  const vals   = Object.values(DATA.region_rev);
+  new Chart(document.getElementById('chart-region'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: vals, backgroundColor: REG_COLORS, borderRadius: 6 }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtM(ctx.parsed.y) } } },
+      scales: {
+        x: { ticks: { color: cd.tickColor }, grid: { display: false } },
+        y: { ticks: { callback: fmtM, color: cd.tickColor }, grid: { color: cd.gridColor } }
+      }
+    }
+  });
+})();
+
+// ---- EDA: Stacked Area ----
+(function() {
+  const cd = chartDefaults();
+  const datasets = DATA.cats.map(c => ({
+    label: c,
+    data: DATA.cat_series[c],
+    backgroundColor: CAT_COLORS[c] + 'cc',
+    borderColor: CAT_COLORS[c],
+    borderWidth: 1,
+    fill: true,
+    tension: 0.3,
+    pointRadius: 0
+  }));
+  new Chart(document.getElementById('chart-stacked'), {
+    type: 'line',
+    data: { labels: DATA.months, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmtM(ctx.parsed.y) } }
+      },
+      scales: {
+        x: { stacked: true, ticks: { maxTicksLimit: 12, color: cd.tickColor }, grid: { color: cd.gridColor } },
+        y: { stacked: true, ticks: { callback: fmtM, color: cd.tickColor }, grid: { color: cd.gridColor } }
+      }
+    }
+  });
+})();
+
+// ---- EDA: Brand Bar (horizontal) ----
+(function() {
+  const cd = chartDefaults();
+  const labels = Object.keys(DATA.brand_rev);
+  const vals   = Object.values(DATA.brand_rev);
+  new Chart(document.getElementById('chart-brand'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: vals, backgroundColor: '#4a90e2', borderRadius: 4, barThickness: 16 }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmtM(ctx.parsed.x) } } },
+      scales: {
+        x: { ticks: { callback: fmtM, color: cd.tickColor }, grid: { color: cd.gridColor } },
+        y: { ticks: { color: cd.tickColor }, grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ---- EDA: Seasonality line (index by month, 3 year avg) ----
+(function() {
+  const cd = chartDefaults();
+  // Compute mean revenue by calendar month across all years
+  const byMonth = Array.from({length: 12}, () => []);
+  DATA.months.forEach((m, i) => {
+    byMonth[parseInt(m.slice(5,7)) - 1].push(DATA.rev_series[i]);
+  });
+  const meanByMonth = byMonth.map(arr => arr.reduce((a,b)=>a+b,0)/arr.length);
+  const overallMean = meanByMonth.reduce((a,b)=>a+b,0)/12;
+  const idx = meanByMonth.map(v => +(v/overallMean).toFixed(3));
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  new Chart(document.getElementById('chart-seasonal'), {
+    type: 'bar',
+    data: {
+      labels: MON,
+      datasets: [{
+        label: 'Seasonality Index',
+        data: idx,
+        backgroundColor: idx.map(v => v >= 1 ? 'rgba(74,144,226,0.75)' : 'rgba(226,92,74,0.65)'),
+        borderRadius: 4
+      }, {
+        label: 'Baseline (1.0)',
+        data: Array(12).fill(1),
+        type: 'line',
+        borderColor: '#6c757d',
+        borderDash: [5,4],
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => ' Index: ' + ctx.parsed.y } }
+      },
+      scales: {
+        x: { ticks: { color: cd.tickColor }, grid: { display: false } },
+        y: { min: 0.3, max: 1.8, ticks: { color: cd.tickColor }, grid: { color: cd.gridColor } }
+      }
+    }
+  });
+})();
+
+// ---- Forecast: Holt-Winters line + CI ribbon ----
+(function() {
+  const cd = chartDefaults();
+  const allLabels = [...DATA.months, ...DATA.fc_months];
+  const histLen = DATA.months.length;
+  const fcLen   = DATA.fc_months.length;
+
+  // Historical series (padded with null for forecast zone)
+  const histData = [...DATA.rev_series, ...Array(fcLen).fill(null)];
+  // Forecast series (padded with null for historical zone)
+  const fcData   = [...Array(histLen).fill(null), ...DATA.fc_vals];
+  // CI bands
+  const upperData = [...Array(histLen).fill(null), ...DATA.fc_upper];
+  const lowerData = [...Array(histLen).fill(null), ...DATA.fc_lower];
+
+  new Chart(document.getElementById('chart-forecast'), {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: 'CI Upper',
+          data: upperData,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(74,144,226,0.15)',
+          fill: '+1',
+          pointRadius: 0,
+          tension: 0.3
+        },
+        {
+          label: 'CI Lower',
+          data: lowerData,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(74,144,226,0.15)',
+          fill: false,
+          pointRadius: 0,
+          tension: 0.3
+        },
+        {
+          label: 'Historical Revenue',
+          data: histData,
+          borderColor: '#4a90e2',
+          backgroundColor: 'rgba(74,144,226,0.06)',
+          borderWidth: 2.5,
+          pointRadius: 3,
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Forecast',
+          data: fcData,
+          borderColor: '#e25c4a',
+          backgroundColor: 'rgba(226,92,74,0.08)',
+          borderWidth: 2.5,
+          borderDash: [6,4],
+          pointRadius: 5,
+          pointBackgroundColor: '#e25c4a',
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, filter: item => item.text !== 'CI Upper' && item.text !== 'CI Lower' } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              if (ctx.dataset.label.startsWith('CI')) return null;
+              return ' ' + ctx.dataset.label + ': ' + fmtM(ctx.parsed.y);
+            },
+            afterBody: (items) => {
+              const idx = items[0].dataIndex;
+              if (idx >= histLen) {
+                const u = DATA.fc_upper[idx - histLen];
+                const l = DATA.fc_lower[idx - histLen];
+                return ['95% CI: ' + fmtM(l) + ' – ' + fmtM(u)];
+              }
+              return [];
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit: 14, color: cd.tickColor }, grid: { color: cd.gridColor } },
+        y: { ticks: { callback: fmtM, color: cd.tickColor }, grid: { color: cd.gridColor } }
+      }
+    }
+  });
+})();
 </script>
 
 
