@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "projects/golf-swing-analyzer.html",
-    "href": "projects/golf-swing-analyzer.html",
-    "title": "Golf Swing Analyzer MVP",
-    "section": "",
-    "text": "Upload a prerecorded video of your golf swing to receive real-time posture analysis. 100% Private: all processing is done locally in your browser using Google's MediaPipe Vision API. You can check out the repo here: https://github.com/Eric-Wong97/golf-swing-analyzer\n\n  \n    \n       Select Video\n    \n    \n    No file chosen\n  \n\n  \n    \n      Loading Model...\n    \n    Initializing AI Model...\n  \n\n  \n    \n      \n      \n    \n    \n    \n      Analysis Dashboard\n      \n      \n        Lead Arm Straightness\n        --°\n        Waiting for video...\n      \n      \n      \n        Athletic Posture (Knees)\n        --°\n        Waiting for video..."
-  },
-  {
     "objectID": "experience.html",
     "href": "experience.html",
     "title": "Experience",
@@ -26,6 +19,20 @@
     "title": "Experience",
     "section": "Professional Experience",
     "text": "Professional Experience\n\nData Analyst | FPInnovations\nVancouver, British Columbia | November 2022 - August 2025\n\nPerformance Optimization: Engineered and deployed scalable ETL data pipelines (Python, SQL, Azure) across 4 flagship initiatives, drastically cutting client onboarding timelines from 6 months to 4 weeks.\nPredictive Analytics: Architected and deployed end-to-end machine learning anomaly detection models, successfully actively mitigating 30+ operational anomalies per site and safeguarding business continuity.\nProcess Automation: Spearheaded the transition to digitalized reporting architectures spanning 10 cross-functional teams, reclaiming 300+ annual hours of manual engineering effort.\nDevOps & CI/CD: Championed Azure DevOps integration and robust CI/CD pipelines, elevating team-wide code quality and deployment velocity through structured code reviews.\nData Strategy: Wrangled and synthesized massive heterogeneous datasets to surface actionable intelligence, directly influencing executive strategic initiatives.\n\n\n\nSales and Logistics Analyst | Interfor\n(Formerly Sales Assistant)  Burnaby, British Columbia | November 2021 - November 2022\n\nBusiness Intelligence: Designed dynamic Tableau dashboards tracking critical logistics KPIs across 8 VMI frameworks, reducing operational lead times by 12% YoY.\nRevenue Growth: Conducted rigorous market trend variance analysis that identified key growth opportunities, heavily contributing to a 23% YoY revenue surge.\nOperations Management: Administered and optimized high-value supply contracts ($4M/month run-rate) by leveraging ERP data (LumberTrack) for precise demand forecasting."
+  },
+  {
+    "objectID": "projects/golf-swing-analyzer.html",
+    "href": "projects/golf-swing-analyzer.html",
+    "title": "Golf Swing Analyzer MVP",
+    "section": "",
+    "text": "Upload a prerecorded video of your golf swing to receive real-time posture analysis. 100% Private: all processing is done locally in your browser using Google's MediaPipe Vision API. You can check out the repo here: https://github.com/Eric-Wong97/golf-swing-analyzer\n\n  \n    \n       Select Video\n    \n    \n    No file chosen\n  \n\n  \n    \n      Loading Model...\n    \n    Initializing AI Model...\n  \n\n  \n    \n      \n      \n    \n    \n    \n      Analysis Dashboard\n      \n      \n        Lead Arm Straightness\n        --°\n        Waiting for video...\n      \n      \n      \n        Athletic Posture (Knees)\n        --°\n        Waiting for video..."
+  },
+  {
+    "objectID": "projects/consumer-tech-forecast.html",
+    "href": "projects/consumer-tech-forecast.html",
+    "title": "Consumer Tech Retail Forecasting Dashboard",
+    "section": "",
+    "text": "An end-to-end retail analytics pipeline — from raw transactional data in\n        MongoDB through exploratory analysis and Holt-Winters\n        forecasting to this interactive front-end. The live\n        R Shiny dashboard (source below) adds drill-down filters,\n        ARIMA/ETS model selection, and a real-time MongoDB query preview.\n      \n      \n        R / Shiny\n        MongoDB\n        Forecasting\n        EDA\n        Retail Analytics\n      \n      \n        \n          \n          Source Code\n        \n        \n          Deploy Shiny App ↗\n        \n      \n    \n\n    \n    \n      Pipeline Architecture\n      \n        \n          🗄️\n          MongoDB Atlas\n          15,600 weekly records\n        \n        →\n        \n          🔬\n          EDA (R)\n          mongolite + dplyr\n        \n        →\n        \n          📈\n          Forecasting\n          ETS / Holt-Winters\n        \n        →\n        \n          🖥️\n          Shiny Dashboard\n          bslib + plotly\n        \n      \n    \n  \n\n  \n  \n    \n      Total Revenue (3 yr)\n      —\n      Jan 2022 – Dec 2024\n    \n    \n      Units Sold\n      —\n      Across all categories\n    \n    \n      YoY Revenue Growth\n      —\n      2024 vs 2023\n    \n    \n      Top Category\n      —\n      By total revenue\n    \n  \n\n  \n  \n    Overview\n    EDA\n    Forecast\n  \n\n  \n  \n    \n      \n        Monthly Revenue Trend\n        \n      \n      \n        Revenue by Category\n        \n      \n    \n    \n      Revenue by Region\n      \n    \n  \n\n  \n  \n    \n      \n        Stacked Revenue by Category\n        \n      \n      \n        Brand Revenue Ranking\n        \n      \n    \n    \n      Seasonality Index (Revenue vs Annual Mean by Month)\n      \n    \n  \n\n  \n  \n    \n      \n        Holt-Winters Forecast — Jan–Jun 2025\n        Triple Exponential Smoothing (α=0.3, β=0.1, γ=0.4)\n      \n      \n    \n    \n      Forecasting Methodology\n      \n        Revenue is modelled with Holt-Winters triple exponential smoothing (period = 12 months),\n        which decomposes the signal into level, trend, and seasonality components. The 95% prediction\n        interval widens with forecast horizon, reflecting accumulated uncertainty. In the full\n        R Shiny app, forecast::ets() automatically selects the optimal\n        error/trend/seasonal variant (additive vs multiplicative vs damped) via AIC.\n      \n      \n        —RMSE\n        —MAPE\n        6Month Horizon\n        95%Confidence"
   },
   {
     "objectID": "index.html",
