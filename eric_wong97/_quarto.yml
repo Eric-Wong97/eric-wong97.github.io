@@ -27,6 +27,7 @@ website:
 
 format:
   html:
+    lib-dir: ../eric_wong97/site_libs
     theme:
       light: cosmo
       dark: darkly
