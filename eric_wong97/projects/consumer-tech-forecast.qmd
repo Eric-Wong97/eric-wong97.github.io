@@ -72,9 +72,9 @@ format:
   <!-- KPI Row -->
   <div class="ctrd-kpi-row" id="kpi-row">
     <div class="ctrd-kpi-card">
-      <div class="ctrd-kpi-label">Total Revenue (3 yr)</div>
+      <div class="ctrd-kpi-label">Total Revenue (Sample)</div>
       <div class="ctrd-kpi-value" id="kpi-rev">—</div>
-      <div class="ctrd-kpi-sub">Jan 2022 – Dec 2024</div>
+      <div class="ctrd-kpi-sub" id="kpi-range">Sample window</div>
     </div>
     <div class="ctrd-kpi-card">
       <div class="ctrd-kpi-label">Units Sold</div>
@@ -84,7 +84,7 @@ format:
     <div class="ctrd-kpi-card">
       <div class="ctrd-kpi-label">YoY Revenue Growth</div>
       <div class="ctrd-kpi-value" id="kpi-yoy">—</div>
-      <div class="ctrd-kpi-sub">2024 vs 2023</div>
+      <div class="ctrd-kpi-sub" id="kpi-yoy-sub">Latest full year vs prior year</div>
     </div>
     <div class="ctrd-kpi-card">
       <div class="ctrd-kpi-label">Top Category</div>
@@ -140,7 +140,7 @@ format:
   <div class="ctrd-panel" id="tab-forecast">
     <div class="ctrd-card">
       <div class="ctrd-card-header">
-        Holt-Winters Forecast — Jan–Jun 2025
+        Holt-Winters Forecast — <span id="forecast-range">Next 6 months</span>
         <span class="ctrd-model-badge">Triple Exponential Smoothing (α=0.3, β=0.1, γ=0.4)</span>
       </div>
       <canvas id="chart-forecast" height="280"></canvas>
@@ -310,22 +310,131 @@ format:
 .ctrd-metric-label { font-size: 0.78rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; }
 </style>
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(dplyr)
+library(readr)
+library(lubridate)
+library(jsonlite)
+
+data_dir <- normalizePath(file.path("..", "..", "shiny-app", "data"), winslash = "/", mustWork = TRUE)
+
+sales <- read_csv(file.path(data_dir, "Sales.csv"), show_col_types = FALSE)
+products <- read_csv(file.path(data_dir, "Products.csv"), show_col_types = FALSE)
+stores <- read_csv(file.path(data_dir, "Stores.csv"), show_col_types = FALSE)
+fx <- read_csv(file.path(data_dir, "Exchange_Rates.csv"), show_col_types = FALSE)
+
+products <- products %>%
+  mutate(unit_price_usd = as.numeric(gsub("[$, ]", "", .data[["Unit Price USD"]], fixed = FALSE)))
+sales <- sales %>%
+  mutate(order_date = mdy(.data[["Order Date"]]))
+fx <- fx %>%
+  mutate(fx_date = mdy(Date))
+
+joined <- sales %>%
+  left_join(products %>% select(ProductKey, Brand, Category, unit_price_usd), by = "ProductKey") %>%
+  left_join(stores %>% select(StoreKey, Country), by = "StoreKey") %>%
+  left_join(fx %>% select(fx_date, Currency, Exchange), by = c("order_date" = "fx_date", "Currency Code" = "Currency")) %>%
+  mutate(
+    Exchange = ifelse(is.na(Exchange), 1, Exchange),
+    revenue_usd = Quantity * unit_price_usd / Exchange,
+    ym = format(order_date, "%Y-%m")
+  )
+
+monthly <- joined %>%
+  group_by(ym) %>%
+  summarise(revenue = sum(revenue_usd, na.rm = TRUE), units = sum(Quantity, na.rm = TRUE), .groups = "drop") %>%
+  arrange(ym)
+
+cat_month <- joined %>%
+  group_by(Category, ym) %>%
+  summarise(revenue = sum(revenue_usd, na.rm = TRUE), .groups = "drop")
+
+cats <- sort(unique(cat_month$Category))
+cat_series <- lapply(cats, function(cat_name) {
+  cat_month %>%
+    filter(Category == cat_name) %>%
+    right_join(monthly %>% select(ym), by = "ym") %>%
+    arrange(ym) %>%
+    mutate(revenue = ifelse(is.na(revenue), 0, revenue)) %>%
+    pull(revenue)
+})
+names(cat_series) <- cats
+
+brand_tbl <- joined %>%
+  group_by(Brand) %>%
+  summarise(revenue = sum(revenue_usd, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(revenue)) %>%
+  slice_head(n = 10)
+
+region_tbl <- joined %>%
+  mutate(
+    region = case_when(
+      Country %in% c("United States", "Canada") ~ "North America",
+      Country %in% c("United Kingdom", "France", "Germany", "Italy", "Netherlands") ~ "Europe",
+      Country %in% c("Australia") ~ "Asia-Pacific",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  group_by(region) %>%
+  summarise(revenue = sum(revenue_usd, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(revenue))
+
+fc_months <- character(0)
+fc_vals <- numeric(0)
+fc_upper <- numeric(0)
+fc_lower <- numeric(0)
+
+if (nrow(monthly) >= 24) {
+  ts_data <- ts(monthly$revenue, frequency = 12)
+  fit <- HoltWinters(ts_data)
+  p <- predict(fit, n.ahead = 6, prediction.interval = TRUE, level = 0.95)
+  last <- tail(monthly$ym, 1)
+  fc_months <- format(seq(as.Date(paste0(last, "-01")) %m+% months(1), by = "month", length.out = 6), "%Y-%m")
+  fc_vals <- pmax(0, as.numeric(p[, 1]))
+  fc_lower <- pmax(0, as.numeric(p[, 2]))
+  fc_upper <- pmax(0, as.numeric(p[, 3]))
+}
+
+brand_rev <- setNames(as.list(round(brand_tbl$revenue, 2)), brand_tbl$Brand)
+region_rev <- setNames(as.list(round(region_tbl$revenue, 2)), region_tbl$region)
+
+out <- list(
+  months = monthly$ym,
+  rev_series = round(monthly$revenue, 2),
+  units_series = as.integer(monthly$units),
+  fc_months = fc_months,
+  fc_vals = round(fc_vals, 2),
+  fc_upper = round(fc_upper, 2),
+  fc_lower = round(fc_lower, 2),
+  cats = cats,
+  cat_series = lapply(cat_series, function(x) round(x, 2)),
+  brand_rev = brand_rev,
+  region_rev = region_rev,
+  kpis = list(
+    total_rev = round(sum(joined$revenue_usd, na.rm = TRUE), 2),
+    total_units = as.integer(sum(joined$Quantity, na.rm = TRUE)),
+    best_cat = joined %>% group_by(Category) %>% summarise(revenue = sum(revenue_usd, na.rm = TRUE), .groups = "drop") %>% arrange(desc(revenue)) %>% slice(1) %>% pull(Category),
+    start_month = monthly$ym[1],
+    end_month = monthly$ym[nrow(monthly)]
+  )
+)
+
+ctrd_data_json <- toJSON(out, auto_unbox = TRUE, digits = 12)
+```
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
 // ---- Embedded pre-computed data ----
-const DATA = {"months":["2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12"],"rev_series":[15933590.52,13548317.43,15891608.03,14117989.76,14353381.69,8746072.11,7031834.96,7945181.36,7171370.08,11454833.48,14933806.82,18211492.67,17308533.73,14614966.99,16990012.94,15271926.83,15539887.01,9684351.26,9562428.11,6837324.89,7669435.71,12395042.24,16021466.55,19770473.86,18628788.76,15573468.0,17900285.33,19994324.42,13318636.0,10294195.11,10110564.75,7488783.87,10248946.1,10496237.09,17082749.37,21378938.14],"units_series":[30532,25640,30407,26912,27331,16870,13664,15197,13690,22102,28634,35230,33363,28093,32611,29079,29638,18357,18233,13090,14705,23675,30654,37721,35754,29886,34463,38523,25521,19815,19293,14303,19520,20167,32748,40783],"fc_months":["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06"],"fc_vals":[18222909.89,14683518.29,17050210.7,16934933.53,14573960.75,10033712.33],"fc_upper":[22925868.1,21334505.57,25195973.27,26340849.95,25090095.0,21553560.23],"fc_lower":[13519951.68,8032531.01,8904448.14,7529017.11,4057826.5,0],"cats":["Gaming","Laptops","Smart Home","Smartphones","Tablets","Wearables"],"cat_series":{"Gaming":[1499848.2,1241395.51,1407575.35,1367453.93,1300986.88,810875.34,641386.01,726047.51,660639.37,1033291.01,1391633.22,1707333.02,1573299.35,1330049.8,1561104.43,1379756.34,1368606.74,872749.11,892621.55,635848.83,730054.5,1159800.56,1457838.27,1790206.79,1705739.5,1403285.06,1675284.91,1862708.14,1201163.96,929906.76,928331.32,691553.61,957881.51,965765.71,1535859.47,1925171.15],"Laptops":[4080416.18,3587752.49,4218646.48,3751905.08,3768161.49,2230213.94,1844184.04,2064659.91,1887849.44,3026653.13,3836497.25,4926894.2,4400147.48,3717446.94,4427576.82,3906371.69,4069330.01,2508172.3,2479160.06,1779536.12,1985037.22,3174183.89,4220903.31,5128102.18,4965230.18,4034308.86,4621146.8,5268356.9,3458098.19,2717373.63,2685927.25,1936083.89,2660109.23,2794265.93,4453506.65,5554890.92],"Smart Home":[690941.36,569946.82,708157.53,622241.98,623257.48,405002.95,319200.76,351902.46,312407.1,515229.22,653084.39,800825.9,766945.38,659226.51,752832.62,666963.56,682200.97,421697.54,422833.25,305485.43,333469.17,544452.42,704725.89,862607.72,810631.47,703377.96,808939.25,879509.76,596547.07,453065.07,441959.05,329089.43,438616.23,458361.41,756194.42,931763.55],"Smartphones":[6547578.6,5498748.88,6485068.47,5592048.6,5836986.92,3566117.19,2818086.52,3233518.78,2920586.23,4636738.26,6091108.1,7156717.69,7171849.45,6043648.22,6911303.53,6428866.14,6374754.81,3927847.5,3877110.96,2764054.04,3120215.51,5102404.12,6479942.03,8042636.43,7532814.03,6392666.59,7188437.56,7958281.53,5397678.71,4103381.72,4077685.64,3065857.49,4194364.27,4186936.81,6914771.98,8768216.09],"Tablets":[1552106.3,1316530.96,1530498.31,1382717.77,1424935.28,898635.27,704965.15,776985.06,689581.11,1102137.69,1454005.68,1770385.5,1660284.08,1431684.6,1665082.75,1424238.8,1541175.23,975605.13,936737.58,683054.66,749010.13,1193115.26,1611610.27,1965543.63,1822395.06,1508367.09,1776297.27,2044362.78,1335390.14,1029230.21,996636.84,724622.11,1020202.81,1048875.16,1700733.93,2122177.86],"Wearables":[1562699.88,1333942.77,1541661.89,1401622.4,1399053.64,835227.42,704012.48,792067.64,700306.83,1140784.17,1507478.18,1849336.36,1736007.99,1432910.92,1672112.79,1465730.3,1503819.25,978279.68,953964.71,669345.81,751649.18,1221085.99,1546446.78,1981377.11,1791978.52,1531462.44,1830179.54,1981105.31,1329757.93,1061237.72,980024.65,741577.34,977772.05,1042032.07,1721682.92,2076718.57]},"brand_rev":{"Apple":97964888.73,"Samsung":78086267.36,"Google":54626828.5,"OnePlus":49320372.85,"Microsoft":47809155.75,"Lenovo":37217438.58,"Dell":25453070.3,"HP":25448763.91,"Fitbit":11856331.38,"Garmin":11852146.26},"region_rev":{"North America":136269650.47,"Europe":115417550.32,"Asia-Pacific":157187996.71,"Latin America":74646048.47},"kpis":{"total_rev":483521245.97,"total_units":926204,"avg_order":30994.95,"best_cat":"Smartphones","yoy_growth":6.7}};
+const DATA = `r ctrd_data_json`;
 
 // ---- Helpers ----
 const fmtM  = v => '$' + (v/1e6).toFixed(1) + 'M';
 const fmtK  = v => (v/1e3).toFixed(0) + 'K';
-const CAT_COLORS = {
-  Gaming:       '#4ae2d9',
-  Laptops:      '#e25c4a',
-  'Smart Home': '#a04ae2',
-  Smartphones:  '#4a90e2',
-  Tablets:      '#4ae28c',
-  Wearables:    '#e2c94a'
-};
+const CAT_PALETTE = ['#4a90e2', '#e25c4a', '#a04ae2', '#4ae28c', '#e2c94a', '#4ae2d9', '#f0a500', '#8b5cf6'];
+const colorForCat = (_cat, idx) => CAT_PALETTE[idx % CAT_PALETTE.length];
 const REG_COLORS = ['#4a90e2','#63c9a0','#f0a500','#e2604a'];
 
 // Detect dark mode
@@ -343,10 +452,50 @@ function chartDefaults() {
 }
 
 // ---- KPIs ----
+const monthLabel = ym => {
+  const [year, month] = ym.split('-').map(Number);
+  return new Date(year, month - 1, 1).toLocaleString('en-US', { month: 'short', year: 'numeric' });
+};
+
+function computeFullYearYoY(months, values) {
+  const yearAgg = {};
+  months.forEach((m, idx) => {
+    const year = m.slice(0, 4);
+    yearAgg[year] = yearAgg[year] || { sum: 0, count: 0 };
+    yearAgg[year].sum += values[idx];
+    yearAgg[year].count += 1;
+  });
+  const fullYears = Object.entries(yearAgg)
+    .filter(([, v]) => v.count === 12)
+    .map(([y, v]) => ({ year: y, sum: v.sum }))
+    .sort((a, b) => Number(a.year) - Number(b.year));
+
+  if (fullYears.length < 2) return null;
+  const prev = fullYears[fullYears.length - 2];
+  const curr = fullYears[fullYears.length - 1];
+  return {
+    pct: ((curr.sum / prev.sum) - 1) * 100,
+    label: `${curr.year} vs ${prev.year}`
+  };
+}
+
 document.getElementById('kpi-rev').textContent   = fmtM(DATA.kpis.total_rev);
 document.getElementById('kpi-units').textContent = fmtK(DATA.kpis.total_units);
-document.getElementById('kpi-yoy').textContent   = '+' + DATA.kpis.yoy_growth + '%';
 document.getElementById('kpi-cat').textContent   = DATA.kpis.best_cat;
+document.getElementById('kpi-range').textContent = `${monthLabel(DATA.kpis.start_month)} – ${monthLabel(DATA.kpis.end_month)}`;
+
+const yoy = computeFullYearYoY(DATA.months, DATA.rev_series);
+if (yoy) {
+  const sign = yoy.pct >= 0 ? '+' : '';
+  document.getElementById('kpi-yoy').textContent = `${sign}${yoy.pct.toFixed(1)}%`;
+  document.getElementById('kpi-yoy-sub').textContent = yoy.label;
+} else {
+  document.getElementById('kpi-yoy').textContent = 'N/A';
+}
+
+if (DATA.fc_months.length >= 2) {
+  document.getElementById('forecast-range').textContent = `${monthLabel(DATA.fc_months[0])}–${monthLabel(DATA.fc_months[DATA.fc_months.length - 1])}`;
+}
 
 // Compute in-sample RMSE/MAPE for the methodology section
 (function computeMetrics() {
@@ -424,7 +573,7 @@ Chart.defaults.font.size   = 12;
     type: 'doughnut',
     data: {
       labels: DATA.cats,
-      datasets: [{ data: catTotals, backgroundColor: DATA.cats.map(c => CAT_COLORS[c]), borderWidth: 2 }]
+      datasets: [{ data: catTotals, backgroundColor: DATA.cats.map((c, i) => colorForCat(c, i)), borderWidth: 2 }]
     },
     options: {
       responsive: true,
@@ -462,11 +611,11 @@ Chart.defaults.font.size   = 12;
 // ---- EDA: Stacked Area ----
 (function() {
   const cd = chartDefaults();
-  const datasets = DATA.cats.map(c => ({
+  const datasets = DATA.cats.map((c, i) => ({
     label: c,
     data: DATA.cat_series[c],
-    backgroundColor: CAT_COLORS[c] + 'cc',
-    borderColor: CAT_COLORS[c],
+    backgroundColor: colorForCat(c, i) + 'cc',
+    borderColor: colorForCat(c, i),
     borderWidth: 1,
     fill: true,
     tension: 0.3,
@@ -572,8 +721,18 @@ Chart.defaults.font.size   = 12;
   // Forecast series (padded with null for historical zone)
   const fcData   = [...Array(histLen).fill(null), ...DATA.fc_vals];
   // CI bands
-  const upperData = [...Array(histLen).fill(null), ...DATA.fc_upper];
-  const lowerData = [...Array(histLen).fill(null), ...DATA.fc_lower];
+  const upperRaw = [...Array(histLen).fill(null), ...DATA.fc_upper];
+  const lowerRaw = [...Array(histLen).fill(null), ...DATA.fc_lower];
+  const upperData = upperRaw.map((u, i) => {
+    const l = lowerRaw[i];
+    if (u == null || l == null) return u;
+    return Math.max(u, l);
+  });
+  const lowerData = lowerRaw.map((l, i) => {
+    const u = upperRaw[i];
+    if (u == null || l == null) return l;
+    return Math.min(l, u);
+  });
 
   new Chart(document.getElementById('chart-forecast'), {
     type: 'line',
