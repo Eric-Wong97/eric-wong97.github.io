@@ -28,6 +28,15 @@ format:
     <div class="video-wrapper">
       <video id="video-element" controls playsinline style="display: none;"></video>
       <canvas id="output-canvas"></canvas>
+      <div class="drawing-controls">
+        <button id="toggle-drawing" class="drawing-btn">
+          <i class="bi bi-pencil"></i> Draw Lines
+        </button>
+        <button id="clear-drawing" class="drawing-btn" style="display: none;">
+          <i class="bi bi-trash"></i> Clear
+        </button>
+        <input type="color" id="line-color" value="#ffff00" style="display: none;">
+      </div>
     </div>
     
     <div class="dashboard">
@@ -43,6 +52,104 @@ format:
         <h4>Athletic Posture (Knees)</h4>
         <div class="metric-value" id="knee-angle">--&deg;</div>
         <div class="recommendation" id="knee-rec">Waiting for video...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="performance-report" id="performance-report" style="display: none;">
+    <div class="report-header">
+      <h3>
+        <i class="bi bi-clipboard-data"></i> Complete Performance Report
+      </h3>
+      <button id="export-report" class="export-btn">
+        <i class="bi bi-download"></i> Export Report
+      </button>
+    </div>
+    
+    <div class="report-content">
+      <div class="report-section">
+        <h4>Session Summary</h4>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="label">Video Duration:</span>
+            <span class="value" id="report-duration">--</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Frames Analyzed:</span>
+            <span class="value" id="report-frames">--</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Detection Rate:</span>
+            <span class="value" id="report-detection">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h4>Lead Arm Analysis</h4>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <span class="label">Current Angle:</span>
+            <span class="value" id="report-arm-current">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Average Angle:</span>
+            <span class="value" id="report-arm-avg">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Min Angle:</span>
+            <span class="value" id="report-arm-min">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Max Angle:</span>
+            <span class="value" id="report-arm-max">--°</span>
+          </div>
+          <div class="metric-item full-width">
+            <span class="label">Threshold:</span>
+            <span class="value">≥ 160° (Good)</span>
+          </div>
+          <div class="metric-item full-width">
+            <span class="label">Assessment:</span>
+            <span class="value" id="report-arm-assessment">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h4>Knee Posture Analysis</h4>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <span class="label">Current Angle:</span>
+            <span class="value" id="report-knee-current">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Average Angle:</span>
+            <span class="value" id="report-knee-avg">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Min Angle:</span>
+            <span class="value" id="report-knee-min">--°</span>
+          </div>
+          <div class="metric-item">
+            <span class="label">Max Angle:</span>
+            <span class="value" id="report-knee-max">--°</span>
+          </div>
+          <div class="metric-item full-width">
+            <span class="label">Optimal Range:</span>
+            <span class="value">130° - 170° (Good Athletic Posture)</span>
+          </div>
+          <div class="metric-item full-width">
+            <span class="label">Assessment:</span>
+            <span class="value" id="report-knee-assessment">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h4>Key Recommendations</h4>
+        <ul class="recommendations-list" id="recommendations-list">
+          <li>Upload a video to generate recommendations</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -124,8 +231,50 @@ format:
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
     object-fit: contain;
+  }
+
+  .drawing-controls {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .drawing-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .drawing-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  .drawing-btn.active {
+    background: var(--primary);
+    color: white;
+  }
+
+  #line-color {
+    width: 40px;
+    height: 40px;
+    border: 2px solid white;
+    border-radius: 6px;
+    cursor: pointer;
   }
 
   .dashboard {
@@ -180,6 +329,132 @@ format:
     background: rgba(220, 53, 69, 0.1);
     color: #dc3545;
   }
+
+  .performance-report {
+    max-width: 1200px;
+    margin: 3rem auto 0;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .report-header {
+    background: var(--bs-primary);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .report-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .export-btn {
+    background: white;
+    color: var(--bs-primary);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  .report-content {
+    padding: 2rem;
+  }
+
+  .report-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+
+  .report-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .report-section h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--bs-primary);
+  }
+
+  .summary-grid,
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .summary-item,
+  .metric-item {
+    background: var(--bs-secondary-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .metric-item.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .summary-item .label,
+  .metric-item .label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .summary-item .value,
+  .metric-item .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: monospace;
+  }
+
+  .recommendations-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .recommendations-list li {
+    background: var(--bs-secondary-bg);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--bs-primary);
+  }
+
+  .recommendations-list li.warning {
+    border-left-color: #dc3545;
+    background: rgba(220, 53, 69, 0.05);
+  }
+
+  .recommendations-list li.success {
+    border-left-color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+  }
 </style>
 
 <script type="module">
@@ -201,10 +476,35 @@ const armRecEl = document.getElementById("arm-rec");
 const kneeAngleEl = document.getElementById("knee-angle");
 const kneeRecEl = document.getElementById("knee-rec");
 
+// Drawing controls
+const toggleDrawingBtn = document.getElementById("toggle-drawing");
+const clearDrawingBtn = document.getElementById("clear-drawing");
+const lineColorPicker = document.getElementById("line-color");
+
+// Report elements
+const performanceReport = document.getElementById("performance-report");
+const exportReportBtn = document.getElementById("export-report");
+
 let poseLandmarker = undefined;
 let runningMode = "VIDEO";
 let lastVideoTime = -1;
 let isModelLoading = false;
+
+// Drawing state
+let isDrawingMode = false;
+let isDrawing = false;
+let drawnLines = [];
+let currentLine = [];
+
+// Performance tracking
+let performanceData = {
+  armAngles: [],
+  kneeAngles: [],
+  totalFrames: 0,
+  detectedFrames: 0,
+  startTime: null,
+  duration: 0
+};
 
 // Geometry Math Ported from Python
 function calculateAngle(a, b, c) {
@@ -219,6 +519,111 @@ function calculateAngle(a, b, c) {
 function updateRecommendationUI(el, isGood, goodText, badText) {
   el.textContent = isGood ? goodText : badText;
   el.className = "recommendation " + (isGood ? "rec-good" : "rec-bad");
+}
+
+function resetPerformanceData() {
+  performanceData = {
+    armAngles: [],
+    kneeAngles: [],
+    totalFrames: 0,
+    detectedFrames: 0,
+    startTime: performance.now(),
+    duration: 0
+  };
+}
+
+function updatePerformanceReport() {
+  if (performanceData.armAngles.length === 0) return;
+  
+  // Show report
+  performanceReport.style.display = "block";
+  
+  // Session summary
+  document.getElementById("report-duration").textContent = 
+    `${videoElement.duration ? videoElement.duration.toFixed(1) : '--'} seconds`;
+  document.getElementById("report-frames").textContent = performanceData.totalFrames;
+  document.getElementById("report-detection").textContent = 
+    `${((performanceData.detectedFrames / performanceData.totalFrames) * 100).toFixed(1)}%`;
+  
+  // Arm analysis
+  const armAngles = performanceData.armAngles;
+  const armAvg = armAngles.reduce((a, b) => a + b, 0) / armAngles.length;
+  const armMin = Math.min(...armAngles);
+  const armMax = Math.max(...armAngles);
+  const armCurrent = armAngles[armAngles.length - 1];
+  
+  document.getElementById("report-arm-current").textContent = `${Math.round(armCurrent)}°`;
+  document.getElementById("report-arm-avg").textContent = `${Math.round(armAvg)}°`;
+  document.getElementById("report-arm-min").textContent = `${Math.round(armMin)}°`;
+  document.getElementById("report-arm-max").textContent = `${Math.round(armMax)}°`;
+  
+  const armGoodPercent = (armAngles.filter(a => a >= 160).length / armAngles.length) * 100;
+  document.getElementById("report-arm-assessment").textContent = 
+    armAvg >= 160 ? `Excellent - ${armGoodPercent.toFixed(0)}% of frames in good range` 
+                  : `Needs improvement - Only ${armGoodPercent.toFixed(0)}% of frames in good range`;
+  
+  // Knee analysis
+  const kneeAngles = performanceData.kneeAngles;
+  const kneeAvg = kneeAngles.reduce((a, b) => a + b, 0) / kneeAngles.length;
+  const kneeMin = Math.min(...kneeAngles);
+  const kneeMax = Math.max(...kneeAngles);
+  const kneeCurrent = kneeAngles[kneeAngles.length - 1];
+  
+  document.getElementById("report-knee-current").textContent = `${Math.round(kneeCurrent)}°`;
+  document.getElementById("report-knee-avg").textContent = `${Math.round(kneeAvg)}°`;
+  document.getElementById("report-knee-min").textContent = `${Math.round(kneeMin)}°`;
+  document.getElementById("report-knee-max").textContent = `${Math.round(kneeMax)}°`;
+  
+  const kneeGoodPercent = (kneeAngles.filter(k => k >= 130 && k <= 170).length / kneeAngles.length) * 100;
+  document.getElementById("report-knee-assessment").textContent = 
+    kneeAvg >= 130 && kneeAvg <= 170 
+      ? `Excellent - ${kneeGoodPercent.toFixed(0)}% of frames in optimal range` 
+      : `Needs adjustment - Only ${kneeGoodPercent.toFixed(0)}% of frames in optimal range`;
+  
+  // Generate recommendations
+  const recommendations = [];
+  if (armAvg < 160) {
+    recommendations.push({
+      text: `Focus on keeping your lead arm straighter. Average angle was ${Math.round(armAvg)}°, target is ≥160°.`,
+      type: 'warning'
+    });
+  } else {
+    recommendations.push({
+      text: `Great job maintaining lead arm straightness! Average ${Math.round(armAvg)}° is in the optimal range.`,
+      type: 'success'
+    });
+  }
+  
+  if (kneeAvg < 130) {
+    recommendations.push({
+      text: `Your knees are too bent. Try to straighten them slightly. Average was ${Math.round(kneeAvg)}°, optimal is 130-170°.`,
+      type: 'warning'
+    });
+  } else if (kneeAvg > 170) {
+    recommendations.push({
+      text: `Add more knee flex for better athletic posture. Average was ${Math.round(kneeAvg)}°, optimal is 130-170°.`,
+      type: 'warning'
+    });
+  } else {
+    recommendations.push({
+      text: `Perfect knee posture! Average ${Math.round(kneeAvg)}° is in the optimal athletic range.`,
+      type: 'success'
+    });
+  }
+  
+  // Consistency check
+  const armRange = armMax - armMin;
+  if (armRange > 30) {
+    recommendations.push({
+      text: `Work on consistency - your lead arm angle varied by ${Math.round(armRange)}° throughout the swing.`,
+      type: 'warning'
+    });
+  }
+  
+  const recList = document.getElementById("recommendations-list");
+  recList.innerHTML = recommendations.map(rec => 
+    `<li class="${rec.type}">${rec.text}</li>`
+  ).join('');
 }
 
 async function createPoseLandmarker() {
@@ -252,10 +657,177 @@ videoUpload.addEventListener("change", async (event) => {
   videoElement.src = fileURL;
   videoElement.style.display = "block";
   
+  // Reset performance data for new video
+  resetPerformanceData();
+  performanceReport.style.display = "none";
+  drawnLines = [];
+  currentLine = [];
+  
   // Ensure model is loaded before playing
   if (!poseLandmarker && !isModelLoading) {
     await createPoseLandmarker();
   }
+});
+
+// Drawing mode toggle
+toggleDrawingBtn.addEventListener("click", () => {
+  isDrawingMode = !isDrawingMode;
+  toggleDrawingBtn.classList.toggle("active");
+  clearDrawingBtn.style.display = isDrawingMode ? "block" : "none";
+  lineColorPicker.style.display = isDrawingMode ? "block" : "none";
+  canvasElement.style.pointerEvents = isDrawingMode ? "auto" : "none";
+  canvasElement.style.cursor = isDrawingMode ? "crosshair" : "default";
+});
+
+clearDrawingBtn.addEventListener("click", () => {
+  drawnLines = [];
+  currentLine = [];
+});
+
+// Canvas drawing event handlers
+canvasElement.addEventListener("mousedown", (e) => {
+  if (!isDrawingMode) return;
+  isDrawing = true;
+  const rect = canvasElement.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvasElement.width / rect.width);
+  const y = (e.clientY - rect.top) * (canvasElement.height / rect.height);
+  currentLine = [{x, y}];
+});
+
+canvasElement.addEventListener("mousemove", (e) => {
+  if (!isDrawingMode || !isDrawing) return;
+  const rect = canvasElement.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvasElement.width / rect.width);
+  const y = (e.clientY - rect.top) * (canvasElement.height / rect.height);
+  currentLine.push({x, y});
+});
+
+canvasElement.addEventListener("mouseup", () => {
+  if (!isDrawingMode || !isDrawing) return;
+  isDrawing = false;
+  if (currentLine.length > 1) {
+    drawnLines.push({
+      points: [...currentLine],
+      color: lineColorPicker.value
+    });
+  }
+  currentLine = [];
+});
+
+canvasElement.addEventListener("mouseleave", () => {
+  if (isDrawing) {
+    isDrawing = false;
+    if (currentLine.length > 1) {
+      drawnLines.push({
+        points: [...currentLine],
+        color: lineColorPicker.value
+      });
+    }
+    currentLine = [];
+  }
+});
+
+// Touch support for mobile
+canvasElement.addEventListener("touchstart", (e) => {
+  if (!isDrawingMode) return;
+  e.preventDefault();
+  isDrawing = true;
+  const rect = canvasElement.getBoundingClientRect();
+  const touch = e.touches[0];
+  const x = (touch.clientX - rect.left) * (canvasElement.width / rect.width);
+  const y = (touch.clientY - rect.top) * (canvasElement.height / rect.height);
+  currentLine = [{x, y}];
+});
+
+canvasElement.addEventListener("touchmove", (e) => {
+  if (!isDrawingMode || !isDrawing) return;
+  e.preventDefault();
+  const rect = canvasElement.getBoundingClientRect();
+  const touch = e.touches[0];
+  const x = (touch.clientX - rect.left) * (canvasElement.width / rect.width);
+  const y = (touch.clientY - rect.top) * (canvasElement.height / rect.height);
+  currentLine.push({x, y});
+});
+
+canvasElement.addEventListener("touchend", () => {
+  if (!isDrawingMode || !isDrawing) return;
+  isDrawing = false;
+  if (currentLine.length > 1) {
+    drawnLines.push({
+      points: [...currentLine],
+      color: lineColorPicker.value
+    });
+  }
+  currentLine = [];
+});
+
+// Export report functionality
+exportReportBtn.addEventListener("click", () => {
+  if (performanceData.armAngles.length === 0) {
+    alert("No data to export yet. Please analyze a video first.");
+    return;
+  }
+  
+  const armAngles = performanceData.armAngles;
+  const kneeAngles = performanceData.kneeAngles;
+  const armAvg = armAngles.reduce((a, b) => a + b, 0) / armAngles.length;
+  const kneeAvg = kneeAngles.reduce((a, b) => a + b, 0) / kneeAngles.length;
+  
+  const reportText = `
+GOLF SWING ANALYZER - PERFORMANCE REPORT
+Generated: ${new Date().toLocaleString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SESSION SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Video Duration: ${videoElement.duration ? videoElement.duration.toFixed(1) : '--'} seconds
+Frames Analyzed: ${performanceData.totalFrames}
+Detection Rate: ${((performanceData.detectedFrames / performanceData.totalFrames) * 100).toFixed(1)}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LEAD ARM ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Current Angle: ${Math.round(armAngles[armAngles.length - 1])}°
+Average Angle: ${Math.round(armAvg)}°
+Min Angle: ${Math.round(Math.min(...armAngles))}°
+Max Angle: ${Math.round(Math.max(...armAngles))}°
+Threshold: ≥ 160° (Good)
+Frames in Good Range: ${((armAngles.filter(a => a >= 160).length / armAngles.length) * 100).toFixed(0)}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KNEE POSTURE ANALYSIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Current Angle: ${Math.round(kneeAngles[kneeAngles.length - 1])}°
+Average Angle: ${Math.round(kneeAvg)}°
+Min Angle: ${Math.round(Math.min(...kneeAngles))}°
+Max Angle: ${Math.round(Math.max(...kneeAngles))}°
+Optimal Range: 130° - 170° (Good Athletic Posture)
+Frames in Optimal Range: ${((kneeAngles.filter(k => k >= 130 && k <= 170).length / kneeAngles.length) * 100).toFixed(0)}%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${document.getElementById("recommendations-list").innerText}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Generated by Golf Swing Analyzer MVP
+Privacy-first, client-side AI analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+  const blob = new Blob([reportText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `golf-swing-report-${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 });
 
 // Setup Canvas dimensions to match video once loaded
@@ -276,12 +848,14 @@ async function renderLoop() {
     const startTimeMs = performance.now();
     if (lastVideoTime !== videoElement.currentTime) {
       lastVideoTime = videoElement.currentTime;
+      performanceData.totalFrames++;
       
       poseLandmarker.detectForVideo(videoElement, startTimeMs, (result) => {
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         
         if (result.landmarks && result.landmarks.length > 0) {
+          performanceData.detectedFrames++;
           const landmarks = result.landmarks[0];
           
           // Draw standard skeleton lines
@@ -308,6 +882,10 @@ async function renderLoop() {
           if (lShoulder && lElbow && lWrist && lHip && lKnee && lAnkle) {
             const armAngle = calculateAngle(lShoulder, lElbow, lWrist);
             const kneeAngle = calculateAngle(lHip, lKnee, lAnkle);
+            
+            // Track performance data
+            performanceData.armAngles.push(armAngle);
+            performanceData.kneeAngles.push(kneeAngle);
             
             // Dashboard updates
             armAngleEl.innerHTML = `${Math.round(armAngle)}&deg;`;
@@ -342,6 +920,9 @@ async function renderLoop() {
             const kneeY = lKnee.y * canvasElement.height;
             canvasCtx.strokeText(`${Math.round(kneeAngle)}°`, kneeX + 15, kneeY);
             canvasCtx.fillText(`${Math.round(kneeAngle)}°`, kneeX + 15, kneeY);
+            
+            // Update performance report
+            updatePerformanceReport();
           }
         } else {
             // Null state if person goes off camera
@@ -352,6 +933,41 @@ async function renderLoop() {
             kneeRecEl.className = "recommendation";
             kneeRecEl.textContent = "No person detected";
         }
+        
+        // Draw user's reference lines
+        drawnLines.forEach(line => {
+          canvasCtx.strokeStyle = line.color;
+          canvasCtx.lineWidth = 4;
+          canvasCtx.lineCap = "round";
+          canvasCtx.lineJoin = "round";
+          canvasCtx.beginPath();
+          line.points.forEach((point, index) => {
+            if (index === 0) {
+              canvasCtx.moveTo(point.x, point.y);
+            } else {
+              canvasCtx.lineTo(point.x, point.y);
+            }
+          });
+          canvasCtx.stroke();
+        });
+        
+        // Draw current line being drawn
+        if (isDrawing && currentLine.length > 0) {
+          canvasCtx.strokeStyle = lineColorPicker.value;
+          canvasCtx.lineWidth = 4;
+          canvasCtx.lineCap = "round";
+          canvasCtx.lineJoin = "round";
+          canvasCtx.beginPath();
+          currentLine.forEach((point, index) => {
+            if (index === 0) {
+              canvasCtx.moveTo(point.x, point.y);
+            } else {
+              canvasCtx.lineTo(point.x, point.y);
+            }
+          });
+          canvasCtx.stroke();
+        }
+        
         canvasCtx.restore();
       });
     }
