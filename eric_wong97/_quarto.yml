@@ -15,8 +15,6 @@ website:
           - text: Personal
           - text: Golf Swing Analyzer
             href: projects/golf-swing-analyzer.qmd
-          - text: Consumer Tech Retail Forecast
-            href: projects/consumer-tech-forecast.qmd
     right:
       - icon: linkedin
         href: https://www.linkedin.com/in/eric~wong/
