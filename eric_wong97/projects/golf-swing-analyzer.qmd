@@ -158,7 +158,7 @@ format:
 
 <style>
   .analyzer-container {
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 2rem 0;
   }
@@ -198,7 +198,7 @@ format:
 
   .workspace {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2.5fr 1fr;
     gap: 2rem;
     align-items: start;
   }
@@ -212,6 +212,7 @@ format:
   .video-wrapper {
     position: relative;
     width: 100%;
+    max-width: 1100px;
     background: #000;
     border-radius: 12px;
     overflow: hidden;
@@ -232,6 +233,7 @@ format:
     width: 100%;
     height: 100%;
     object-fit: contain;
+    pointer-events: none;
   }
 
   .drawing-controls {
@@ -492,9 +494,9 @@ let isModelLoading = false;
 
 // Drawing state
 let isDrawingMode = false;
-let isDrawing = false;
 let drawnLines = [];
-let currentLine = [];
+let pendingLineStart = null;
+let pointerPreview = null;
 
 // Performance tracking
 let performanceData = {
@@ -661,7 +663,8 @@ videoUpload.addEventListener("change", async (event) => {
   resetPerformanceData();
   performanceReport.style.display = "none";
   drawnLines = [];
-  currentLine = [];
+  pendingLineStart = null;
+  pointerPreview = null;
   
   // Ensure model is loaded before playing
   if (!poseLandmarker && !isModelLoading) {
@@ -677,88 +680,78 @@ toggleDrawingBtn.addEventListener("click", () => {
   lineColorPicker.style.display = isDrawingMode ? "block" : "none";
   canvasElement.style.pointerEvents = isDrawingMode ? "auto" : "none";
   canvasElement.style.cursor = isDrawingMode ? "crosshair" : "default";
+  if (!isDrawingMode) {
+    pendingLineStart = null;
+    pointerPreview = null;
+  }
 });
 
 clearDrawingBtn.addEventListener("click", () => {
   drawnLines = [];
-  currentLine = [];
+  pendingLineStart = null;
+  pointerPreview = null;
 });
 
-// Canvas drawing event handlers
-canvasElement.addEventListener("mousedown", (e) => {
-  if (!isDrawingMode) return;
-  isDrawing = true;
+function getCanvasPoint(clientX, clientY) {
   const rect = canvasElement.getBoundingClientRect();
-  const x = (e.clientX - rect.left) * (canvasElement.width / rect.width);
-  const y = (e.clientY - rect.top) * (canvasElement.height / rect.height);
-  currentLine = [{x, y}];
+  return {
+    x: (clientX - rect.left) * (canvasElement.width / rect.width),
+    y: (clientY - rect.top) * (canvasElement.height / rect.height)
+  };
+}
+
+function addOrCompleteLine(point) {
+  if (!pendingLineStart) {
+    pendingLineStart = point;
+    pointerPreview = point;
+    return;
+  }
+
+  drawnLines.push({
+    start: pendingLineStart,
+    end: point,
+    color: lineColorPicker.value
+  });
+  pendingLineStart = null;
+  pointerPreview = null;
+}
+
+// Canvas drawing event handlers (two-click line creation)
+canvasElement.addEventListener("click", (e) => {
+  if (!isDrawingMode) return;
+  const point = getCanvasPoint(e.clientX, e.clientY);
+  addOrCompleteLine(point);
 });
 
 canvasElement.addEventListener("mousemove", (e) => {
-  if (!isDrawingMode || !isDrawing) return;
-  const rect = canvasElement.getBoundingClientRect();
-  const x = (e.clientX - rect.left) * (canvasElement.width / rect.width);
-  const y = (e.clientY - rect.top) * (canvasElement.height / rect.height);
-  currentLine.push({x, y});
-});
-
-canvasElement.addEventListener("mouseup", () => {
-  if (!isDrawingMode || !isDrawing) return;
-  isDrawing = false;
-  if (currentLine.length > 1) {
-    drawnLines.push({
-      points: [...currentLine],
-      color: lineColorPicker.value
-    });
-  }
-  currentLine = [];
+  if (!isDrawingMode || !pendingLineStart) return;
+  pointerPreview = getCanvasPoint(e.clientX, e.clientY);
 });
 
 canvasElement.addEventListener("mouseleave", () => {
-  if (isDrawing) {
-    isDrawing = false;
-    if (currentLine.length > 1) {
-      drawnLines.push({
-        points: [...currentLine],
-        color: lineColorPicker.value
-      });
-    }
-    currentLine = [];
-  }
+  if (!isDrawingMode || !pendingLineStart) return;
+  pointerPreview = null;
 });
 
-// Touch support for mobile
+// Touch support for mobile (tap once for start, tap again for end)
 canvasElement.addEventListener("touchstart", (e) => {
   if (!isDrawingMode) return;
   e.preventDefault();
-  isDrawing = true;
-  const rect = canvasElement.getBoundingClientRect();
   const touch = e.touches[0];
-  const x = (touch.clientX - rect.left) * (canvasElement.width / rect.width);
-  const y = (touch.clientY - rect.top) * (canvasElement.height / rect.height);
-  currentLine = [{x, y}];
-});
+  const point = getCanvasPoint(touch.clientX, touch.clientY);
+  addOrCompleteLine(point);
+}, { passive: false });
 
 canvasElement.addEventListener("touchmove", (e) => {
-  if (!isDrawingMode || !isDrawing) return;
+  if (!isDrawingMode || !pendingLineStart) return;
   e.preventDefault();
-  const rect = canvasElement.getBoundingClientRect();
   const touch = e.touches[0];
-  const x = (touch.clientX - rect.left) * (canvasElement.width / rect.width);
-  const y = (touch.clientY - rect.top) * (canvasElement.height / rect.height);
-  currentLine.push({x, y});
-});
+  pointerPreview = getCanvasPoint(touch.clientX, touch.clientY);
+}, { passive: false });
 
 canvasElement.addEventListener("touchend", () => {
-  if (!isDrawingMode || !isDrawing) return;
-  isDrawing = false;
-  if (currentLine.length > 1) {
-    drawnLines.push({
-      points: [...currentLine],
-      color: lineColorPicker.value
-    });
-  }
-  currentLine = [];
+  if (!isDrawingMode || !pendingLineStart) return;
+  pointerPreview = null;
 });
 
 // Export report functionality
@@ -941,30 +934,20 @@ async function renderLoop() {
           canvasCtx.lineCap = "round";
           canvasCtx.lineJoin = "round";
           canvasCtx.beginPath();
-          line.points.forEach((point, index) => {
-            if (index === 0) {
-              canvasCtx.moveTo(point.x, point.y);
-            } else {
-              canvasCtx.lineTo(point.x, point.y);
-            }
-          });
+          canvasCtx.moveTo(line.start.x, line.start.y);
+          canvasCtx.lineTo(line.end.x, line.end.y);
           canvasCtx.stroke();
         });
         
-        // Draw current line being drawn
-        if (isDrawing && currentLine.length > 0) {
+        // Draw preview line while selecting second point
+        if (isDrawingMode && pendingLineStart && pointerPreview) {
           canvasCtx.strokeStyle = lineColorPicker.value;
           canvasCtx.lineWidth = 4;
           canvasCtx.lineCap = "round";
           canvasCtx.lineJoin = "round";
           canvasCtx.beginPath();
-          currentLine.forEach((point, index) => {
-            if (index === 0) {
-              canvasCtx.moveTo(point.x, point.y);
-            } else {
-              canvasCtx.lineTo(point.x, point.y);
-            }
-          });
+          canvasCtx.moveTo(pendingLineStart.x, pendingLineStart.y);
+          canvasCtx.lineTo(pointerPreview.x, pointerPreview.y);
           canvasCtx.stroke();
         }
         
