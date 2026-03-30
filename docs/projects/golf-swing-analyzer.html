@@ -358,6 +358,12 @@ ul.task-list li input[type="checkbox"] {
         <button id="toggle-drawing" class="drawing-btn">
           <i class="bi bi-pencil"></i> Draw Lines
         </button>
+        <button id="undo-drawing" class="drawing-btn" style="display: none;" disabled="">
+          <i class="bi bi-arrow-counterclockwise"></i> Undo
+        </button>
+        <button id="redo-drawing" class="drawing-btn" style="display: none;" disabled="">
+          <i class="bi bi-arrow-clockwise"></i> Redo
+        </button>
         <button id="clear-drawing" class="drawing-btn" style="display: none;">
           <i class="bi bi-trash"></i> Clear
         </button>
@@ -572,12 +578,26 @@ ul.task-list li input[type="checkbox"] {
 
   .drawing-controls {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.4rem;
     align-items: center;
     z-index: 10;
+  }
+
+  @media (max-width: 768px) {
+    .drawing-controls {
+      top: auto;
+      left: 0.75rem;
+      bottom: 0.75rem;
+      transform: none;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
   }
 
   .drawing-btn {
@@ -603,6 +623,13 @@ ul.task-list li input[type="checkbox"] {
   .drawing-btn.active {
     background: var(--primary);
     color: white;
+  }
+
+  .drawing-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
   #line-color {
@@ -815,6 +842,8 @@ const kneeRecEl = document.getElementById("knee-rec");
 
 // Drawing controls
 const toggleDrawingBtn = document.getElementById("toggle-drawing");
+const undoDrawingBtn = document.getElementById("undo-drawing");
+const redoDrawingBtn = document.getElementById("redo-drawing");
 const clearDrawingBtn = document.getElementById("clear-drawing");
 const lineColorPicker = document.getElementById("line-color");
 
@@ -830,6 +859,7 @@ let isModelLoading = false;
 // Drawing state
 let isDrawingMode = false;
 let drawnLines = [];
+let redoLines = [];
 let pendingLineStart = null;
 let pointerPreview = null;
 
@@ -998,8 +1028,10 @@ videoUpload.addEventListener("change", async (event) => {
   resetPerformanceData();
   performanceReport.style.display = "none";
   drawnLines = [];
+  redoLines = [];
   pendingLineStart = null;
   pointerPreview = null;
+  updateDrawingButtons();
   redrawLineCanvas();
   
   // Ensure model is loaded before playing
@@ -1012,10 +1044,13 @@ videoUpload.addEventListener("change", async (event) => {
 toggleDrawingBtn.addEventListener("click", () => {
   isDrawingMode = !isDrawingMode;
   toggleDrawingBtn.classList.toggle("active");
+  undoDrawingBtn.style.display = isDrawingMode ? "block" : "none";
+  redoDrawingBtn.style.display = isDrawingMode ? "block" : "none";
   clearDrawingBtn.style.display = isDrawingMode ? "block" : "none";
   lineColorPicker.style.display = isDrawingMode ? "block" : "none";
   lineCanvasElement.style.pointerEvents = isDrawingMode ? "auto" : "none";
   lineCanvasElement.style.cursor = isDrawingMode ? "crosshair" : "default";
+  updateDrawingButtons();
   if (!isDrawingMode) {
     pendingLineStart = null;
     pointerPreview = null;
@@ -1025,10 +1060,35 @@ toggleDrawingBtn.addEventListener("click", () => {
 
 clearDrawingBtn.addEventListener("click", () => {
   drawnLines = [];
+  redoLines = [];
   pendingLineStart = null;
   pointerPreview = null;
+  updateDrawingButtons();
   redrawLineCanvas();
 });
+
+undoDrawingBtn.addEventListener("click", () => {
+  if (drawnLines.length === 0) return;
+  redoLines.push(drawnLines.pop());
+  pendingLineStart = null;
+  pointerPreview = null;
+  updateDrawingButtons();
+  redrawLineCanvas();
+});
+
+redoDrawingBtn.addEventListener("click", () => {
+  if (redoLines.length === 0) return;
+  drawnLines.push(redoLines.pop());
+  pendingLineStart = null;
+  pointerPreview = null;
+  updateDrawingButtons();
+  redrawLineCanvas();
+});
+
+function updateDrawingButtons() {
+  undoDrawingBtn.disabled = drawnLines.length === 0;
+  redoDrawingBtn.disabled = redoLines.length === 0;
+}
 
 function getCanvasPoint(clientX, clientY) {
   const rect = lineCanvasElement.getBoundingClientRect();
@@ -1100,8 +1160,10 @@ function addOrCompleteLine(point) {
     end: point,
     color: lineColorPicker.value
   });
+  redoLines = [];
   pendingLineStart = null;
   pointerPreview = null;
+  updateDrawingButtons();
   redrawLineCanvas();
 }
 
